@@ -1,3 +1,5 @@
+import { PageInfo } from '../common/common';
+
 export type AccountItem = {
   id: number;
   loginId: number;
@@ -11,17 +13,6 @@ export type AccountItem = {
   closed_at?: string;
 };
 
-export type AccountList = {
+export type AccountList = PageInfo & {
   data?: AccountItem[];
-  /** 列表的内容总数 */
-  total?: number;
-  success?: boolean;
-  empty: boolean;
-  errCode: string;
-  errMessage: string;
-  notEmpty: boolean;
-  pageIndex: number;
-  pageSize: number;
-  totalCount: number;
-  totalPages: number;
 };

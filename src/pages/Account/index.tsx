@@ -33,14 +33,7 @@ export default () => {
       columns={AccountColumns}
       actionRef={actionRef}
       cardBordered
-      request={(params, sorter, filter) => {
-        console.log(params);
-        console.log(sorter);
-        console.log(filter);
-        params.pageIndex = params.current;
-        delete params['current'];
-        return getAccountList(params);
-      }}
+      request={getAccountList}
       postData={(data: AccountItem[]) => {
         console.log(data);
         return data;
