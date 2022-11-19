@@ -18,14 +18,15 @@ export default {
   test: {
     // localhost:8000/api/** -> https://preview.pro.ant.design/api/**
     '/api/': {
-      target: 'https://proapi.azurewebsites.net',
+      target:
+        'https://console-mock.apipost.cn/mock/12116459-e7b3-459b-be4e-8338d621a0cc/iam/account/list',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
   },
   pre: {
     '/api/': {
-      target: 'your pre url',
+      target: '',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
