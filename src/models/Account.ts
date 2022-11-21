@@ -1,5 +1,3 @@
-import { PageInfo } from '../common/common';
-
 export type AccountItem = {
   id: number;
   loginId: number;
@@ -11,8 +9,4 @@ export type AccountItem = {
   createTime: string;
   updateTime: string;
   closed_at?: string;
-};
-
-export type AccountList = PageInfo & {
-  data?: AccountItem[];
 };

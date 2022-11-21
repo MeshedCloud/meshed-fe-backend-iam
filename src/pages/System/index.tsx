@@ -3,9 +3,9 @@ import type { ActionType } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { Button, Dropdown, Menu } from 'antd';
 import { useRef } from 'react';
-import { AccountItem } from '@/models/Account';
-import { getAccountList } from '@/api/Account';
-import { AccountColumns } from '@/pages/Account/components/columns';
+import { SystemItem } from '@/models/System';
+import { SystemColumns } from '@/pages/System/components/columns';
+import { getSystemList } from '@/api/System';
 
 const menu = (
   <Menu
@@ -30,11 +30,11 @@ export default () => {
   const actionRef = useRef<ActionType>();
   return (
     <PageContainer>
-      <ProTable<AccountItem>
-        columns={AccountColumns}
+      <ProTable<SystemItem>
+        columns={SystemColumns}
         actionRef={actionRef}
         cardBordered
-        request={getAccountList}
+        request={getSystemList}
         editable={{
           type: 'multiple',
         }}
@@ -71,7 +71,7 @@ export default () => {
           onChange: (page) => console.log(page),
         }}
         dateFormatter="string"
-        headerTitle="账号管理"
+        headerTitle="系统管理"
         toolBarRender={() => [
           <Button key="button" icon={<PlusOutlined />} type="primary">
             新建

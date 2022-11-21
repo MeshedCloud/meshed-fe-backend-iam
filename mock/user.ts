@@ -35,8 +35,8 @@ export default {
         data: {
           isLogin: false,
         },
-        errorCode: '401',
-        errorMessage: '请先登录！',
+        errCode: '401',
+        errMessage: '请先登录！',
         success: true,
       });
       return;

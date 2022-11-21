@@ -1,11 +1,13 @@
-import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
+import { EllipsisOutlined } from '@ant-design/icons';
 import type { ActionType } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { Button, Dropdown, Menu } from 'antd';
-import { useRef } from 'react';
-import { AccountItem } from '@/models/Account';
-import { getAccountList } from '@/api/Account';
-import { AccountColumns } from '@/pages/Account/components/columns';
+import { useRef, useState } from 'react';
+import { RoleColumns } from '@/pages/Role/components/columns';
+import { getRoleList } from '@/api/Role';
+import { RoleItem } from '@/models/Role';
+import RoleForm from '@/pages/Role/components/RoleForm';
+import { getSystemSelect } from '@/api/System';
 
 const menu = (
   <Menu
@@ -27,14 +29,21 @@ const menu = (
 );
 
 export default () => {
+  const [parentId, setParentId] = useState('0');
+  const systemLabel: any[] = [];
+  getSystemSelect({}).then((res) => {
+    if (res.success && res.data) {
+      systemLabel.push(...res.data);
+    }
+  });
   const actionRef = useRef<ActionType>();
   return (
     <PageContainer>
-      <ProTable<AccountItem>
-        columns={AccountColumns}
+      <ProTable<RoleItem>
+        columns={RoleColumns}
         actionRef={actionRef}
         cardBordered
-        request={getAccountList}
+        request={getRoleList}
         editable={{
           type: 'multiple',
         }}
@@ -66,22 +75,51 @@ export default () => {
             return values;
           },
         }}
-        pagination={{
-          showSizeChanger: true,
-          onChange: (page) => console.log(page),
-        }}
+        pagination={false}
         dateFormatter="string"
-        headerTitle="账号管理"
+        headerTitle="角色管理"
         toolBarRender={() => [
-          <Button key="button" icon={<PlusOutlined />} type="primary">
-            新建
-          </Button>,
+          <RoleForm operate="addition" />,
+
           <Dropdown key="menu" overlay={menu}>
             <Button>
               <EllipsisOutlined />
             </Button>
           </Dropdown>,
         ]}
+        params={{
+          parentId,
+        }}
+        tableRender={(_, dom) => (
+          <div
+            style={{
+              display: 'flex',
+              width: '100%',
+            }}
+          >
+            <Menu
+              onSelect={(e) => setParentId(e.key as string)}
+              style={{ width: 256 }}
+              defaultSelectedKeys={['0']}
+              defaultOpenKeys={['0']}
+              mode="inline"
+              items={[
+                {
+                  key: '0',
+                  label: '全部角色',
+                },
+                ...systemLabel,
+              ]}
+            />
+            <div
+              style={{
+                flex: 1,
+              }}
+            >
+              {dom}
+            </div>
+          </div>
+        )}
       />
     </PageContainer>
   );

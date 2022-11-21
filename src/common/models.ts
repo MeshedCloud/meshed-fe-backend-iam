@@ -1,5 +1,3 @@
-import { request } from '@@/exports';
-
 export type PageInfo<T> = {
   data?: T[];
   /** 列表的内容总数 */
@@ -13,6 +11,27 @@ export type PageInfo<T> = {
   pageSize: number;
   totalCount: number;
   totalPages: number;
+};
+
+export type Response<T> = {
+  data?: T;
+  /** 列表的内容总数 */
+  success?: boolean;
+  errCode: string;
+  errMessage: string;
+};
+
+export type CommonItem = {
+  id: number;
+  status: string;
+  created: string;
+  updated: string;
+};
+
+export type LabelItem = {
+  parentId: number;
+  key: string;
+  label: string;
 };
 
 export type PageParams = {
@@ -30,22 +49,4 @@ export enum Method {
   PUT = 'PUT',
   POST = 'POST',
   DELETE = 'DELETE',
-}
-
-export async function requestPage<T>(
-  uri: string,
-  method: Method,
-  params: PageParams & {},
-  options?: { [key: string]: any },
-) {
-  params.pageIndex = params.current;
-  const response = await request<PageInfo<T>>(uri, {
-    method,
-    params: {
-      ...params,
-    },
-    ...(options || {}),
-  });
-  response.total = response.totalCount;
-  return response;
 }
