@@ -1,7 +1,7 @@
 import { Request } from '@/common/request';
-import type { PermissionItem } from '@/models/Permission';
+import type { PermissionItem } from '@/models/permission';
 import type { PageParams } from '@/common/models';
-import { SystemItem } from '@/models/System';
+import { SystemItem } from '@/models/system';
 
 /** 获取规则列表 GET /api/iam/permission/list */
 export async function getPermissionList(params: {}, options?: Record<string, any>) {

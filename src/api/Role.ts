@@ -1,7 +1,7 @@
 import { Request } from '@/common/request';
-import type { RoleItem } from '@/models/Role';
+import type { RoleItem } from '@/models/role';
 import type { PageParams } from '@/common/models';
-import { RoleDetails } from '@/models/Role';
+import { RoleDetails } from '@/models/role';
 
 /** 获取规则列表 GET /api/role/list */
 export async function getRoleList(params?: {}, options?: { [key: string]: any }) {
@@ -9,6 +9,12 @@ export async function getRoleList(params?: {}, options?: { [key: string]: any })
 }
 
 /** 获取规则列表 GET /api/role/details */
-export async function getRoleDetails(params: { id: number }, options?: { [key: string]: any }) {
+export async function getRoleDetails(
+  params: { id: number | undefined },
+  options?: { [key: string]: any },
+) {
+  if (params.id === undefined) {
+    return undefined;
+  }
   return Request.get<RoleDetails>('/api/iam/role/details', params, options);
 }

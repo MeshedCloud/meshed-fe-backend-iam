@@ -67,3 +67,7 @@ export class Request {
     return this.getTree<T>(uri, params, struct, undefined, options);
   }
 }
+
+export async function getData<T>(response: Response<T> | undefined, check: boolean, obj: T) {
+  return check && response && response.success && response.data ? response.data : obj;
+}

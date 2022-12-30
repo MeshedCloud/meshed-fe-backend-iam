@@ -3,7 +3,7 @@ import type { ActionType } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { Button, Dropdown, Menu } from 'antd';
 import { useRef } from 'react';
-import { AccountItem } from '@/models/Account';
+import { AccountItem } from '@/models/account';
 import { getAccountList } from '@/api/Account';
 import { AccountColumns } from '@/pages/Account/components/columns';
 

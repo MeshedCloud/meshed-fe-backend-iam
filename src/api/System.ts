@@ -1,6 +1,6 @@
 import { Request } from '@/common/request';
 import { PageParams } from '@/common/models';
-import { SystemItem } from '@/models/System';
+import { SystemItem } from '@/models/system';
 
 /** 获取规则列表 GET /api/system/list */
 export async function getSystemList(params?: {}, options?: { [key: string]: any }) {

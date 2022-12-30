@@ -1,5 +1,6 @@
-import { ProColumns, TableDropdown } from '@ant-design/pro-components';
-import { PermissionItem } from '@/models/Permission';
+import type { ProColumns } from '@ant-design/pro-components';
+import { TableDropdown } from '@ant-design/pro-components';
+import type { PermissionItem } from '@/models/permission';
 export const PermissionColumns: ProColumns<PermissionItem>[] = [
   {
     title: '权限',

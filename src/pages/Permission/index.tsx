@@ -5,7 +5,7 @@ import { Button, Dropdown, Menu } from 'antd';
 import { useRef, useState } from 'react';
 import { PermissionColumns } from '@/pages/Permission/columns';
 import { getPermissionList } from '@/api/Permission';
-import { PermissionItem } from '@/models/Permission';
+import { PermissionItem } from '@/models/permission';
 import { getSystemSelect } from '@/api/System';
 
 const menu = (

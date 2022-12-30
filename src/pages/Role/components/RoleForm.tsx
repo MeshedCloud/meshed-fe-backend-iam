@@ -7,9 +7,10 @@ import {
   ProFormTreeSelect,
 } from '@ant-design/pro-components';
 import { Button, Form, message } from 'antd';
-import { RoleDetails } from '@/models/Role';
+import { RoleDetails } from '@/models/role';
 import { getPermissionTreeSelect } from '@/api/Permission';
 import { getRoleDetails } from '@/api/Role';
+import { getData } from '@/common/request';
 
 const waitTime = (time: number = 100) => {
   return new Promise((resolve) => {
@@ -23,27 +24,8 @@ type Props = {
   id?: number;
 };
 
-const roleDetails: RoleDetails = {
-  id: -1,
-  parentId: 0,
-  name: '',
-  enname: '',
-  owner: '',
-  description: '',
-  access: [],
-  status: '',
-  created: '',
-  updated: '',
-};
-
 export default (props: Props) => {
   const [form] = Form.useForm<RoleDetails>();
-  // if (props.id){
-  //   getRoleDetails({id:props.id}).then(res=>{
-  //     if (res.success){
-  //     }
-  //   })
-  // }
 
   return (
     <ModalForm<RoleDetails>
@@ -70,10 +52,11 @@ export default (props: Props) => {
       }}
       form={form}
       request={async () => {
-        if (props.id == undefined) return roleDetails;
-        const res = await getRoleDetails({ id: props.id });
-        if (res.success && res.data) return res.data;
-        return roleDetails;
+        return getData(
+          await getRoleDetails({ id: props.id }),
+          props.id !== undefined,
+          new RoleDetails(),
+        );
       }}
       autoFocusFirstInput
       modalProps={{

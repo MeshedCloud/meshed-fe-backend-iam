@@ -1,5 +1,5 @@
 import { ProColumns, TableDropdown } from '@ant-design/pro-components';
-import { SystemItem } from '@/models/System';
+import { SystemItem } from '@/models/system';
 export const SystemColumns: ProColumns<SystemItem>[] = [
   {
     title: '系统名称',

@@ -5,7 +5,7 @@ import { Button, Dropdown, Menu } from 'antd';
 import { useRef, useState } from 'react';
 import { RoleColumns } from '@/pages/Role/components/columns';
 import { getRoleList } from '@/api/Role';
-import { RoleItem } from '@/models/Role';
+import { RoleItem } from '@/models/role';
 import RoleForm from '@/pages/Role/components/RoleForm';
 import { getSystemSelect } from '@/api/System';
 

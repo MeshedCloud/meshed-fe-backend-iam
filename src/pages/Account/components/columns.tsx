@@ -1,5 +1,5 @@
 import { ProColumns, TableDropdown } from '@ant-design/pro-components';
-import { AccountItem } from '@/models/Account';
+import { AccountItem } from '@/models/account';
 import { Space, Tag } from 'antd';
 export const AccountColumns: ProColumns<AccountItem>[] = [
   {

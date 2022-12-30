@@ -1,5 +1,5 @@
 import { ProColumns, TableDropdown } from '@ant-design/pro-components';
-import { RoleItem } from '@/models/Role';
+import { RoleItem } from '@/models/role';
 import RoleForm from './RoleForm';
 export const RoleColumns: ProColumns<RoleItem>[] = [
   {

@@ -1,5 +1,5 @@
 import { Request } from '@/common/request';
-import type { AccountItem } from '@/models/Account';
+import type { AccountItem } from '@/models/account';
 import type { PageParams } from '@/common/models';
 
 /** 获取规则列表 GET /api/iam/account/list */
