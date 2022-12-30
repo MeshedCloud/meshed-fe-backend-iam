@@ -18,3 +18,14 @@ export async function getSystemSelect(params?: {}, options?: { [key: string]: an
     options,
   );
 }
+
+/** 获取规则列表 GET /api/system/details */
+export async function getSystemDetails(
+  params: { id: number | undefined },
+  options?: { [key: string]: any },
+) {
+  if (params.id === undefined) {
+    return undefined;
+  }
+  return Request.get<SystemItem>('/api/iam/system/details', params, options);
+}

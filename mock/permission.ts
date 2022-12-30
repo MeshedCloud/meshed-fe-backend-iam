@@ -217,9 +217,8 @@ const getPermissionDetails = (req: Request, res: Response) => {
       name: '超级管理员',
       enname: 'Root',
       owner: 'iam',
-      status: 'VALID',
+      status: 'INVALID',
       description: 'test',
-      assess: [1, 2, 4],
     },
   });
 };

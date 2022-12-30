@@ -18,3 +18,15 @@ export async function getRoleDetails(
   }
   return Request.get<RoleDetails>('/api/iam/role/details', params, options);
 }
+
+/** 获取规则列表 GET /api/permission/label */
+export async function getRoleTreeSelect(params?: {}, options?: { [key: string]: any }) {
+  return await Request.getConvertTree<any>(
+    '/api/iam/role/select',
+    <PageParams>params,
+    (value) => {
+      return { title: value.name + `(${value.enname})`, value: value.id, ...value };
+    },
+    options,
+  );
+}

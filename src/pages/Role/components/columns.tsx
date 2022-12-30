@@ -32,21 +32,14 @@ export const RoleColumns: ProColumns<RoleItem>[] = [
     },
   },
   {
-    title: '归属',
-    dataIndex: 'owner',
-    tip: '归属的系统',
-  },
-  {
     title: '状态',
     dataIndex: 'status',
-    initialValue: 'VALID',
     filters: true,
     onFilter: true,
     valueType: 'select',
     valueEnum: {
       VALID: { text: '正常', status: 'Success' },
       INVALID: { text: '失效', status: 'Default' },
-      DELETE: { text: '删除', status: 'Error' },
     },
   },
   {

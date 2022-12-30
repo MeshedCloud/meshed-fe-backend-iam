@@ -3,10 +3,11 @@ import { ActionType, PageContainer } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { Button, Dropdown, Menu } from 'antd';
 import { useRef, useState } from 'react';
-import { PermissionColumns } from '@/pages/Permission/columns';
-import { getPermissionList } from '@/api/Permission';
+import { PermissionColumns } from '@/pages/Permission/components/columns';
+import { getPermissionTreeList } from '@/api/Permission';
 import { PermissionItem } from '@/models/permission';
 import { getSystemSelect } from '@/api/System';
+import PermissionForm from '@/pages/Permission/components/PermissionForm';
 
 const menu = (
   <Menu
@@ -29,7 +30,7 @@ const menu = (
 
 export default () => {
   const actionRef = useRef<ActionType>();
-  const [parentId, setParentId] = useState('0');
+  const [systemId, setSystemId] = useState('0');
   const systemLabel: any[] = [];
   getSystemSelect({}).then((res) => {
     if (res.success && res.data) {
@@ -42,7 +43,7 @@ export default () => {
         columns={PermissionColumns}
         actionRef={actionRef}
         cardBordered
-        request={getPermissionList}
+        request={getPermissionTreeList}
         postData={(data) => {
           console.log(data);
           return data;
@@ -82,6 +83,7 @@ export default () => {
         dateFormatter="string"
         headerTitle="权限管理"
         toolBarRender={() => [
+          <PermissionForm operate="addition" />,
           <Dropdown key="menu" overlay={menu}>
             <Button>
               <EllipsisOutlined />
@@ -89,7 +91,7 @@ export default () => {
           </Dropdown>,
         ]}
         params={{
-          parentId,
+          systemId,
         }}
         tableRender={(_, dom) => (
           <div
@@ -99,7 +101,7 @@ export default () => {
             }}
           >
             <Menu
-              onSelect={(e) => setParentId(e.key as string)}
+              onSelect={(e) => setSystemId(e.key as string)}
               style={{ width: 256 }}
               defaultSelectedKeys={['0']}
               defaultOpenKeys={['0']}
@@ -107,7 +109,7 @@ export default () => {
               items={[
                 {
                   key: '0',
-                  label: '全部权限',
+                  label: '全部系统',
                 },
                 ...systemLabel,
               ]}

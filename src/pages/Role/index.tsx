@@ -29,7 +29,7 @@ const menu = (
 );
 
 export default () => {
-  const [parentId, setParentId] = useState('0');
+  const [systemId, setSystemId] = useState('0');
   const systemLabel: any[] = [];
   getSystemSelect({}).then((res) => {
     if (res.success && res.data) {
@@ -88,7 +88,7 @@ export default () => {
           </Dropdown>,
         ]}
         params={{
-          parentId,
+          systemId,
         }}
         tableRender={(_, dom) => (
           <div
@@ -98,7 +98,7 @@ export default () => {
             }}
           >
             <Menu
-              onSelect={(e) => setParentId(e.key as string)}
+              onSelect={(e) => setSystemId(e.key as string)}
               style={{ width: 256 }}
               defaultSelectedKeys={['0']}
               defaultOpenKeys={['0']}
@@ -106,7 +106,7 @@ export default () => {
               items={[
                 {
                   key: '0',
-                  label: '全部角色',
+                  label: '全部系统',
                 },
                 ...systemLabel,
               ]}

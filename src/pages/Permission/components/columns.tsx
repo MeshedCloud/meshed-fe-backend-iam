@@ -1,6 +1,7 @@
 import type { ProColumns } from '@ant-design/pro-components';
 import { TableDropdown } from '@ant-design/pro-components';
 import type { PermissionItem } from '@/models/permission';
+import PermissionForm from '@/pages/Permission/components/PermissionForm';
 export const PermissionColumns: ProColumns<PermissionItem>[] = [
   {
     title: '权限',
@@ -22,21 +23,6 @@ export const PermissionColumns: ProColumns<PermissionItem>[] = [
     copyable: true,
     ellipsis: true,
     tip: '受控制的权限路径',
-    formItemProps: {
-      rules: [
-        {
-          required: true,
-          message: '此项为必填项',
-        },
-      ],
-    },
-  },
-  {
-    title: '业务码',
-    dataIndex: 'enname',
-    copyable: true,
-    ellipsis: true,
-    tip: '权限业务码',
     formItemProps: {
       rules: [
         {
@@ -78,21 +64,14 @@ export const PermissionColumns: ProColumns<PermissionItem>[] = [
     },
   },
   {
-    title: '归属',
-    dataIndex: 'owner',
-    tip: '归属的系统',
-  },
-  {
     title: '状态',
     dataIndex: 'status',
-    initialValue: 'VALID',
     filters: true,
     onFilter: true,
     valueType: 'select',
     valueEnum: {
       VALID: { text: '正常', status: 'Success' },
       INVALID: { text: '失效', status: 'Default' },
-      DELETE: { text: '删除', status: 'Error' },
     },
   },
   {
@@ -122,14 +101,7 @@ export const PermissionColumns: ProColumns<PermissionItem>[] = [
     valueType: 'option',
     key: 'option',
     render: (text, record, _, action) => [
-      <a
-        key="editable"
-        onClick={() => {
-          action?.startEditable?.(record.id);
-        }}
-      >
-        编辑
-      </a>,
+      <PermissionForm id={record.id} operate="editable" />,
       <TableDropdown
         key="actionGroup"
         onSelect={() => action?.reload()}

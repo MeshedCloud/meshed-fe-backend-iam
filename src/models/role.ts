@@ -5,6 +5,7 @@ export class RoleItem extends CommonItem {
   name: string | undefined;
   enname: string | undefined;
   owner: string | undefined;
+  ownerId: string | undefined;
   description: string | undefined;
 }
 

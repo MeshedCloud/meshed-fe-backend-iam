@@ -15,9 +15,9 @@ const Settings: LayoutSettings & {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: '统一身份管理平台',
+  title: '统一身份管理',
   pwa: false,
-  logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
+  logo: 'http://s.meshed.cn/meshed/svg/logo-no-background.svg',
   iconfontUrl: '',
 };
 

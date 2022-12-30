@@ -1,5 +1,6 @@
 import { ProColumns, TableDropdown } from '@ant-design/pro-components';
 import { SystemItem } from '@/models/system';
+import SystemForm from './SystemForm';
 export const SystemColumns: ProColumns<SystemItem>[] = [
   {
     title: '系统名称',
@@ -75,7 +76,7 @@ export const SystemColumns: ProColumns<SystemItem>[] = [
     valueType: 'option',
     key: 'option',
     render: (text, record, _, action) => [
-      // <RoleForm operate="editable"/>,
+      <SystemForm id={record.id} operate="editable" />,
       <TableDropdown
         key="actionGroup"
         onSelect={() => action?.reload()}

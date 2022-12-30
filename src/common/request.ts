@@ -16,6 +16,19 @@ export class Request {
     return response;
   }
 
+  static async getList<T>(uri: string, params: {}, options?: { [key: string]: any }) {
+    const response = await request<PageInfo<T>>(uri, {
+      method: Method.GET,
+      params: {
+        ...params,
+      },
+      ...(options || {}),
+    });
+    // response.total = response.totalCount;
+    console.log(response);
+    return response;
+  }
+
   static async get<T>(uri: string, params: {}, options?: { [key: string]: any }) {
     return await request<Response<T>>(uri, {
       method: Method.GET,

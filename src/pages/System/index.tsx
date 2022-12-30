@@ -1,4 +1,4 @@
-import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
+import { EllipsisOutlined } from '@ant-design/icons';
 import type { ActionType } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { Button, Dropdown, Menu } from 'antd';
@@ -6,6 +6,7 @@ import { useRef } from 'react';
 import { SystemItem } from '@/models/system';
 import { SystemColumns } from '@/pages/System/components/columns';
 import { getSystemList } from '@/api/System';
+import SystemForm from '@/pages/System/components/SystemForm';
 
 const menu = (
   <Menu
@@ -73,9 +74,7 @@ export default () => {
         dateFormatter="string"
         headerTitle="系统管理"
         toolBarRender={() => [
-          <Button key="button" icon={<PlusOutlined />} type="primary">
-            新建
-          </Button>,
+          <SystemForm operate="addition" />,
           <Dropdown key="menu" overlay={menu}>
             <Button>
               <EllipsisOutlined />

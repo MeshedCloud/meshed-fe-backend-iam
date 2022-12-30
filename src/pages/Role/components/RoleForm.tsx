@@ -2,6 +2,7 @@ import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import {
   ModalForm,
   ProForm,
+  ProFormDependency,
   ProFormSelect,
   ProFormText,
   ProFormTreeSelect,
@@ -9,8 +10,9 @@ import {
 import { Button, Form, message } from 'antd';
 import { RoleDetails } from '@/models/role';
 import { getPermissionTreeSelect } from '@/api/Permission';
-import { getRoleDetails } from '@/api/Role';
+import { getRoleDetails, getRoleTreeSelect } from '@/api/Role';
 import { getData } from '@/common/request';
+import { getSystemSelect } from '@/api/System';
 
 const waitTime = (time: number = 100) => {
   return new Promise((resolve) => {
@@ -26,10 +28,21 @@ type Props = {
 
 export default (props: Props) => {
   const [form] = Form.useForm<RoleDetails>();
-
+  const roleLabel: any[] = [];
+  getRoleTreeSelect({}).then((res) => {
+    if (res.success && res.data) {
+      roleLabel.push(...res.data);
+    }
+  });
+  const systemLabel: any[] = [];
+  getSystemSelect({}).then((res) => {
+    if (res.success && res.data) {
+      systemLabel.push(...res.data);
+    }
+  });
   return (
     <ModalForm<RoleDetails>
-      title="新建表单"
+      title={props.operate == 'addition' ? '新建角色' : '更新角色'}
       trigger={
         props.operate == 'addition' ? (
           <Button type="primary">
@@ -73,30 +86,41 @@ export default (props: Props) => {
       }}
     >
       <ProForm.Group>
-        <ProFormSelect
+        <ProFormTreeSelect
+          initialValue={0}
           request={async () => [
             {
-              value: '0',
-              label: '根角色',
+              value: 0,
+              label: '主系统',
             },
+            ...roleLabel,
           ]}
           width="md"
           name="parentId"
           tooltip="父角色可以拥有角色的全部权限,子角色继承父角色权限字符扩展"
           label="父角色"
         />
-        <ProFormSelect
-          request={async () => [
-            {
-              value: '0',
-              label: '根系统',
-            },
-          ]}
-          width="md"
-          name="owner"
-          tooltip="用于系统中分类管理角色"
-          label="归属系统"
-        />
+        <ProFormDependency name={['parentId']}>
+          {(values) => {
+            return (
+              <ProFormSelect
+                hidden={values['parentId'] != 0}
+                initialValue={0}
+                request={async () => [
+                  {
+                    value: 0,
+                    label: '主系统',
+                  },
+                  ...systemLabel,
+                ]}
+                width="md"
+                name="owner"
+                tooltip="用于系统中分类管理角色"
+                label="归属系统"
+              />
+            );
+          }}
+        </ProFormDependency>
       </ProForm.Group>
       <ProForm.Group>
         <ProFormText
@@ -137,6 +161,24 @@ export default (props: Props) => {
               label: 'title',
             },
           }}
+        />
+
+        <ProFormSelect
+          initialValue={'VALID'}
+          request={async () => [
+            {
+              value: 'VALID',
+              label: '正常',
+            },
+            {
+              value: 'INVALID',
+              label: '禁用',
+            },
+          ]}
+          width="md"
+          name="status"
+          tooltip="角色状态"
+          label="状态"
         />
       </ProForm.Group>
     </ModalForm>

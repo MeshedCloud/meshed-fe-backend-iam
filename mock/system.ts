@@ -94,7 +94,26 @@ const getSystemLabel = (req: Request, res: Response) => {
   });
 };
 
+const getSystemDetails = (req: Request, res: Response) => {
+  res.json({
+    success: true,
+    errCode: null,
+    errMessage: null,
+    data: {
+      id: 1,
+      parentId: 0,
+      enname: 'iam',
+      description: '账号管理',
+      name: '身份中心',
+      status: 'VALID',
+      created: '2022-10-08T20:57:28',
+      updated: '2022-10-08T20:57:30',
+    },
+  });
+};
+
 export default {
   'GET /api/iam/system/list': getSystemList,
   'GET /api/iam/system/select': getSystemLabel,
+  'GET /api/iam/system/details': getSystemDetails,
 };
