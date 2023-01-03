@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { SUCCESS_RESPONSE } from './commonMock';
 
 const getSystemList = (req: Request, res: Response) => {
   res.json({
@@ -112,8 +113,18 @@ const getSystemDetails = (req: Request, res: Response) => {
   });
 };
 
+const saveAccount = (req: Request, res: Response) => {
+  res.json(SUCCESS_RESPONSE);
+};
+
+const deleteAccount = (req: Request, res: Response) => {
+  res.json(SUCCESS_RESPONSE);
+};
+
 export default {
   'GET /api/iam/system/list': getSystemList,
   'GET /api/iam/system/select': getSystemLabel,
   'GET /api/iam/system/details': getSystemDetails,
+  'POST /api/iam/system/save': saveAccount,
+  'DELETE /api/iam/system/delete/*': deleteAccount,
 };

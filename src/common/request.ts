@@ -11,8 +11,6 @@ export class Request {
       },
       ...(options || {}),
     });
-    // response.total = response.totalCount;
-    console.log(response);
     return response;
   }
 
@@ -24,8 +22,6 @@ export class Request {
       },
       ...(options || {}),
     });
-    // response.total = response.totalCount;
-    console.log(response);
     return response;
   }
 
@@ -78,6 +74,28 @@ export class Request {
       children: 'children',
     };
     return this.getTree<T>(uri, params, struct, undefined, options);
+  }
+
+  static async post<T>(uri: string, data?: {}, options?: { [key: string]: any }) {
+    return await request<Response<T>>(uri, {
+      method: Method.POST,
+      data,
+      ...(options || {}),
+    });
+  }
+
+  static async put<T>(uri: string, options?: { [key: string]: any }) {
+    return await request<Response<T>>(uri, {
+      method: Method.PUT,
+      ...(options || {}),
+    });
+  }
+
+  static async delete<T>(uri: string, options?: { [key: string]: any }) {
+    return await request<Response<T>>(uri, {
+      method: Method.DELETE,
+      ...(options || {}),
+    });
   }
 }
 

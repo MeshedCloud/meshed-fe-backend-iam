@@ -17,7 +17,7 @@ const Settings: LayoutSettings & {
   colorWeak: false,
   title: '统一身份管理',
   pwa: false,
-  logo: 'http://s.meshed.cn/meshed/svg/logo-no-background.svg',
+  logo: 'https://s.meshed.cn/meshed/svg/logo-no-background.svg',
   iconfontUrl: '',
 };
 

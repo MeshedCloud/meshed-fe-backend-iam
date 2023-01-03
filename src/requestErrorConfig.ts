@@ -109,11 +109,6 @@ export const errorConfig: RequestConfig = {
     (response) => {
       // 拦截响应数据，进行个性化处理
       const { data } = response as unknown as ResponseStructure;
-      if (data?.success === false && data.errMessage) {
-        message.error(data.errMessage);
-      } else if (data?.success === false) {
-        message.error('请求失败！');
-      }
       if (data.totalCount) {
         data.total = data.totalCount;
       }

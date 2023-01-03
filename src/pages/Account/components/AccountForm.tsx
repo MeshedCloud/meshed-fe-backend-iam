@@ -2,18 +2,17 @@ import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import {
   ModalForm,
   ProForm,
-  ProFormDependency,
   ProFormSelect,
   ProFormText,
   ProFormTreeSelect,
 } from '@ant-design/pro-components';
 import { Button, Form } from 'antd';
-import { RoleDetails } from '@/models/role';
-import { getPermissionTreeSelect } from '@/api/Permission';
-import { getRoleDetails, getRoleTreeSelect, saveRole } from '@/api/Role';
+
 import { getData } from '@/common/request';
-import { getSystemSelect } from '@/api/System';
+import { AccountDetail } from '@/models/account';
+import { getAccountDetails, saveAccount } from '@/api/Account';
 import { CommonStatus } from '@/common/models';
+import { getRoleTreeSelect } from '@/api/Role';
 import { success } from '@/common/messages';
 
 type Props = {
@@ -22,22 +21,11 @@ type Props = {
 };
 
 export default (props: Props) => {
-  const [form] = Form.useForm<RoleDetails>();
-  const roleLabel: any[] = [];
-  getRoleTreeSelect({}).then((res) => {
-    if (res.success && res.data) {
-      roleLabel.push(...res.data);
-    }
-  });
-  const systemLabel: any[] = [];
-  getSystemSelect({}).then((res) => {
-    if (res.success && res.data) {
-      systemLabel.push(...res.data);
-    }
-  });
+  const [form] = Form.useForm<AccountDetail>();
+
   return (
-    <ModalForm<RoleDetails>
-      title={props.operate == 'addition' ? '新建角色' : '更新角色'}
+    <ModalForm<AccountDetail>
+      title={props.operate == 'addition' ? '新建账号' : '更新账号'}
       trigger={
         props.operate == 'addition' ? (
           <Button type="primary">
@@ -61,9 +49,9 @@ export default (props: Props) => {
       form={form}
       request={async () => {
         return getData(
-          await getRoleDetails({ id: props.id }),
+          await getAccountDetails({ id: props.id }),
           props.id !== undefined,
-          new RoleDetails(),
+          new AccountDetail(),
         );
       }}
       autoFocusFirstInput
@@ -73,69 +61,60 @@ export default (props: Props) => {
       }}
       submitTimeout={2000}
       onFinish={async (values) => {
-        const res = await saveRole(values);
+        const res = await saveAccount(values);
         return success(res);
       }}
     >
       <ProForm.Group>
-        <ProFormTreeSelect
-          initialValue={0}
-          request={async () => [
-            {
-              value: 0,
-              label: '主系统',
-            },
-            ...roleLabel,
-          ]}
+        <ProFormText
+          disabled={props.operate != 'addition'}
           width="md"
-          name="parentId"
-          tooltip="父角色可以拥有角色的全部权限,子角色继承父角色权限字符扩展"
-          label="父角色"
+          name="loginId"
+          label="账号名称"
+          tooltip="最长为 24 位"
+          placeholder="请输入账号名称"
+          rules={[{ required: true, message: '请输入账号名称!' }]}
         />
-        <ProFormDependency name={['parentId']}>
-          {(values) => {
-            return (
-              <ProFormSelect
-                hidden={values['parentId'] != 0}
-                initialValue={0}
-                request={async () => [
-                  {
-                    value: 0,
-                    label: '主系统',
-                  },
-                  ...systemLabel,
-                ]}
-                width="md"
-                name="owner"
-                tooltip="用于系统中分类管理角色"
-                label="归属系统"
-              />
-            );
-          }}
-        </ProFormDependency>
+
+        <ProFormText.Password
+          hidden={props.operate != 'addition'}
+          width="md"
+          name="password"
+          label="密码"
+          rules={[{ required: true, message: '请输入密码!' }]}
+        />
       </ProForm.Group>
+
       <ProForm.Group>
         <ProFormText
           width="md"
-          name="name"
-          label="角色名称"
-          tooltip="最长为 24 位"
-          placeholder="请输入角色名称"
+          name="phone"
+          label="手机号"
+          tooltip="请输入11位合法的手机号"
+          placeholder="请输入手机号"
+          rules={[{ message: '请输入11位合法的手机号!' }]}
         />
-
-        <ProFormText width="md" name="enname" label="角色业务码" placeholder="请输入角色业务码" />
+        <ProFormText
+          width="md"
+          name="email"
+          label="邮箱"
+          tooltip="请输入合法的邮箱，最长支持32位"
+          placeholder="请输入邮箱"
+          rules={[{ type: 'email', message: '请输入合法的邮箱，最长支持32位!' }]}
+        />
       </ProForm.Group>
+
       <ProForm.Group>
         <ProFormTreeSelect
-          tooltip="授予角色权限"
+          tooltip="授予用户角色"
           label="授权"
-          name="assess"
-          placeholder="请选择授与的权限"
+          name="roles"
+          placeholder="请选择授与的角色"
           allowClear
           width={330}
           secondary
           request={async () => {
-            const res = await getPermissionTreeSelect({});
+            const res = await getRoleTreeSelect({});
             return res.success && res.data ? res.data : [];
           }}
           // tree-select args

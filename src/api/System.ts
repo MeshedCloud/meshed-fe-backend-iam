@@ -29,3 +29,16 @@ export async function getSystemDetails(
   }
   return Request.get<SystemItem>('/api/iam/system/details', params, options);
 }
+
+/** 保存（新增和更新）系统 POST /api/system/save */
+export async function saveSystem(data: SystemItem) {
+  return Request.post('/api/iam/system/save', data);
+}
+
+/** 删除系统 DELETE /api/system/delete */
+export async function deleteSystem(id: number, options?: { [key: string]: any }) {
+  if (id === undefined) {
+    return undefined;
+  }
+  return Request.delete(`/api/iam/system/delete/${id}`, options);
+}

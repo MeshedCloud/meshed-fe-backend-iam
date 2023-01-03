@@ -78,7 +78,7 @@ const Login: React.FC = () => {
     <div className={styles.container}>
       <div className={styles.content}>
         <LoginForm
-          logo={<img alt="logo" src="http://s.meshed.cn/meshed/svg/logo-no-background.svg" />}
+          logo={<img alt="logo" src="https://s.meshed.cn/meshed/svg/logo-no-background.svg" />}
           title="Meshed Cloud 身份中心"
           subTitle={'Meshed Cloud 是微服务快速开发辅助平台'}
           initialValues={{

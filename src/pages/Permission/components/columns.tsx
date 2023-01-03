@@ -2,6 +2,11 @@ import type { ProColumns } from '@ant-design/pro-components';
 import { TableDropdown } from '@ant-design/pro-components';
 import type { PermissionItem } from '@/models/permission';
 import PermissionForm from '@/pages/Permission/components/PermissionForm';
+import { CommonStatusEnum } from '@/common/models';
+import { DeleteOutlined } from '@ant-design/icons';
+import { confirmWarning } from '@/common/confirms';
+import { deletePermission } from '@/api/Permission';
+import { success } from '@/common/messages';
 export const PermissionColumns: ProColumns<PermissionItem>[] = [
   {
     title: '权限',
@@ -69,10 +74,7 @@ export const PermissionColumns: ProColumns<PermissionItem>[] = [
     filters: true,
     onFilter: true,
     valueType: 'select',
-    valueEnum: {
-      VALID: { text: '正常', status: 'Success' },
-      INVALID: { text: '失效', status: 'Default' },
-    },
+    valueEnum: CommonStatusEnum,
   },
   {
     title: '创建时间',
@@ -104,11 +106,18 @@ export const PermissionColumns: ProColumns<PermissionItem>[] = [
       <PermissionForm id={record.id} operate="editable" />,
       <TableDropdown
         key="actionGroup"
-        onSelect={() => action?.reload()}
-        menus={[
-          { key: 'copy', name: '复制' },
-          { key: 'delete', name: '删除' },
-        ]}
+        onSelect={(key) => {
+          switch (key) {
+            case 'delete':
+              confirmWarning(`是否确定删除权限【${record.name}】`, '此操作将不可逆', async () => {
+                const res = await deletePermission(record.id);
+                success(res);
+              });
+              break;
+          }
+          action?.reload();
+        }}
+        menus={[{ key: 'delete', name: '删除', icon: <DeleteOutlined />, danger: true }]}
       />,
     ],
   },

@@ -19,7 +19,7 @@ export async function getRoleDetails(
   return Request.get<RoleDetails>('/api/iam/role/details', params, options);
 }
 
-/** 获取规则列表 GET /api/permission/label */
+/** 获取规则列表 GET /api/role/label */
 export async function getRoleTreeSelect(params?: {}, options?: { [key: string]: any }) {
   return await Request.getConvertTree<any>(
     '/api/iam/role/select',
@@ -29,4 +29,17 @@ export async function getRoleTreeSelect(params?: {}, options?: { [key: string]: 
     },
     options,
   );
+}
+
+/** 保存（新增和更新）角色 POST /api/role/save */
+export async function saveRole(data: RoleDetails) {
+  return Request.post('/api/iam/role/save', data);
+}
+
+/** 删除角色 DELETE /api/role/delete */
+export async function deleteRole(id: number, options?: { [key: string]: any }) {
+  if (id === undefined) {
+    return undefined;
+  }
+  return Request.delete<any>(`/api/iam/role/delete/${id}`, options);
 }

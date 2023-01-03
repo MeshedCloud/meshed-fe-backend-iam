@@ -1,4 +1,4 @@
-import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
+import { EllipsisOutlined } from '@ant-design/icons';
 import type { ActionType } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { Button, Dropdown, Menu } from 'antd';
@@ -6,6 +6,7 @@ import { useRef } from 'react';
 import { AccountItem } from '@/models/account';
 import { getAccountList } from '@/api/Account';
 import { AccountColumns } from '@/pages/Account/components/columns';
+import AccountForm from '@/pages/Account/components/AccountForm';
 
 const menu = (
   <Menu
@@ -73,9 +74,7 @@ export default () => {
         dateFormatter="string"
         headerTitle="账号管理"
         toolBarRender={() => [
-          <Button key="button" icon={<PlusOutlined />} type="primary">
-            新建
-          </Button>,
+          <AccountForm operate="addition" />,
           <Dropdown key="menu" overlay={menu}>
             <Button>
               <EllipsisOutlined />

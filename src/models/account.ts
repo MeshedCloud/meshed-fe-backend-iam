@@ -6,6 +6,11 @@ export class AccountItem {
   status: string | undefined;
   validEmail: boolean | undefined;
   validPhone: boolean | undefined;
+  locked: boolean | undefined;
   createTime: string | undefined;
   updateTime: string | undefined;
+}
+
+export class AccountDetail extends AccountItem {
+  roles: number[] | undefined;
 }

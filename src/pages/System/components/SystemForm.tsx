@@ -6,19 +6,14 @@ import {
   ProFormText,
   ProFormTextArea,
 } from '@ant-design/pro-components';
-import { Button, Form, message } from 'antd';
+import { Button, Form } from 'antd';
 
 import { getData } from '@/common/request';
-import { getSystemDetails } from '@/api/System';
+import { getSystemDetails, saveSystem } from '@/api/System';
 import { SystemItem } from '@/models/system';
+import { CommonStatus } from '@/common/models';
+import { success } from '@/common/messages';
 
-const waitTime = (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
-};
 type Props = {
   operate: string;
   id?: number;
@@ -65,11 +60,8 @@ export default (props: Props) => {
       }}
       submitTimeout={2000}
       onFinish={async (values) => {
-        console.log('props', props);
-        await waitTime(2000);
-        console.log('values', values);
-        message.success('提交成功');
-        return true;
+        const res = await saveSystem(values);
+        return success(res);
       }}
     >
       <ProForm.Group>
@@ -105,16 +97,7 @@ export default (props: Props) => {
       <ProForm.Group>
         <ProFormSelect
           initialValue={'VALID'}
-          request={async () => [
-            {
-              value: 'VALID',
-              label: '正常',
-            },
-            {
-              value: 'INVALID',
-              label: '禁用',
-            },
-          ]}
+          request={async () => CommonStatus}
           width="md"
           name="status"
           tooltip="系统状态"

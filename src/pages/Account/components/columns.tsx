@@ -1,6 +1,13 @@
 import { ProColumns, TableDropdown } from '@ant-design/pro-components';
 import { AccountItem } from '@/models/account';
-import { Space, Tag } from 'antd';
+import { Space, Tag, Tooltip } from 'antd';
+import { CommonStatusEnum } from '@/common/models';
+import AccountForm from '@/pages/Account/components/AccountForm';
+import { DeleteOutlined, LockOutlined, UnlockOutlined, WarningOutlined } from '@ant-design/icons';
+import { confirmWarning } from '@/common/confirms';
+import { deleteAccount, lockAccount, unlockAccount } from '@/api/Account';
+import { success } from '@/common/messages';
+
 export const AccountColumns: ProColumns<AccountItem>[] = [
   {
     title: '序号',
@@ -22,6 +29,22 @@ export const AccountColumns: ProColumns<AccountItem>[] = [
         },
       ],
     },
+    render: (_, record) => (
+      <Space>
+        {
+          <>
+            <a>{_}</a>
+            <Tooltip title={'该账号已经被锁定'}>
+              <WarningOutlined
+                style={{ color: 'red' }}
+                hidden={!record.locked}
+                twoToneColor="#ff4d4f"
+              />
+            </Tooltip>
+          </>
+        }
+      </Space>
+    ),
   },
   {
     title: '手机号',
@@ -80,15 +103,10 @@ export const AccountColumns: ProColumns<AccountItem>[] = [
   {
     title: '状态',
     dataIndex: 'status',
-    initialValue: 'VALID',
     filters: true,
     onFilter: true,
     valueType: 'select',
-    valueEnum: {
-      VALID: { text: '正常', status: 'Success' },
-      INVALID: { text: '失效', status: 'Default' },
-      DELETE: { text: '删除', status: 'Error' },
-    },
+    valueEnum: CommonStatusEnum,
   },
   {
     title: '创建时间',
@@ -117,20 +135,60 @@ export const AccountColumns: ProColumns<AccountItem>[] = [
     valueType: 'option',
     key: 'option',
     render: (text, record, _, action) => [
-      <a
-        key="editable"
-        onClick={() => {
-          action?.startEditable?.(record.id);
-        }}
-      >
-        编辑
-      </a>,
+      <AccountForm id={record.id} operate="editable" />,
       <TableDropdown
         key="actionGroup"
-        onSelect={() => action?.reload()}
+        onSelect={(key) => {
+          switch (key) {
+            case 'lock':
+              confirmWarning(
+                `是否确定锁定用户【${record.loginId}】`,
+                '锁定后用户将无法进行操作',
+                async () => {
+                  const res = await lockAccount({ id: record.id });
+                  success(res);
+                },
+              );
+              break;
+            case 'unlock':
+              confirmWarning(
+                `是否确定解锁用户【${record.loginId}】`,
+                '解锁后用户将恢复正常使用',
+                async () => {
+                  const res = await unlockAccount({ id: record.id });
+                  success(res);
+                },
+              );
+              break;
+            case 'delete':
+              confirmWarning(
+                `是否确定删除用户【${record.loginId}】`,
+                '此操作将不可逆',
+                async () => {
+                  const res = await deleteAccount(record.id);
+                  success(res);
+                },
+              );
+              break;
+          }
+          action?.reload();
+        }}
         menus={[
-          { key: 'copy', name: '复制' },
-          { key: 'delete', name: '删除' },
+          {
+            key: 'lock',
+            name: '锁定',
+            icon: <LockOutlined />,
+            hidden: record.locked,
+            danger: true,
+          },
+          {
+            key: 'unlock',
+            name: '解锁',
+            icon: <UnlockOutlined />,
+            hidden: !record.locked,
+            danger: true,
+          },
+          { key: 'delete', name: '删除', icon: <DeleteOutlined />, danger: true },
         ]}
       />,
     ],

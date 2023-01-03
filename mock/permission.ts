@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { SUCCESS_RESPONSE } from './commonMock';
 
 const getPermissionList = (req: Request, res: Response) => {
   res.json({
@@ -223,8 +224,18 @@ const getPermissionDetails = (req: Request, res: Response) => {
   });
 };
 
+const saveAccount = (req: Request, res: Response) => {
+  res.json(SUCCESS_RESPONSE);
+};
+
+const deleteAccount = (req: Request, res: Response) => {
+  res.json(SUCCESS_RESPONSE);
+};
+
 export default {
   'GET /api/iam/permission/list': getPermissionList,
   'GET /api/iam/permission/details': getPermissionDetails,
   'GET /api/iam/permission/select': getPermissionLabel,
+  'POST /api/iam/permission/save': saveAccount,
+  'DELETE /api/iam/permission/delete/*': deleteAccount,
 };

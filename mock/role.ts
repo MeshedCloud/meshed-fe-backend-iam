@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { SUCCESS_RESPONSE } from './commonMock';
 
 const getRoleList = (req: Request, res: Response) => {
   res.json({
@@ -213,8 +214,18 @@ const getRoleDetails = (req: Request, res: Response) => {
   });
 };
 
+const saveAccount = (req: Request, res: Response) => {
+  res.json(SUCCESS_RESPONSE);
+};
+
+const deleteAccount = (req: Request, res: Response) => {
+  res.json(SUCCESS_RESPONSE);
+};
+
 export default {
   'GET /api/iam/role/list': getRoleList,
   'GET /api/iam/role/details': getRoleDetails,
   'GET /api/iam/role/select': getRoleLabel,
+  'POST /api/iam/role/save': saveAccount,
+  'DELETE /api/iam/role/delete/*': deleteAccount,
 };

@@ -42,3 +42,19 @@ export enum Method {
   POST = 'POST',
   DELETE = 'DELETE',
 }
+
+export const CommonStatus = [
+  {
+    value: 'VALID',
+    label: '正常',
+  },
+  {
+    value: 'INVALID',
+    label: '禁用',
+  },
+];
+
+export const CommonStatusEnum = {
+  VALID: { text: '正常', status: 'Success' },
+  INVALID: { text: '失效', status: 'Default' },
+};

@@ -1,6 +1,11 @@
 import { ProColumns, TableDropdown } from '@ant-design/pro-components';
 import { RoleItem } from '@/models/role';
 import RoleForm from './RoleForm';
+import { CommonStatusEnum } from '@/common/models';
+import { DeleteOutlined } from '@ant-design/icons';
+import { confirmWarning } from '@/common/confirms';
+import { deleteRole } from '@/api/Role';
+import { success } from '@/common/messages';
 export const RoleColumns: ProColumns<RoleItem>[] = [
   {
     title: '角色',
@@ -37,10 +42,7 @@ export const RoleColumns: ProColumns<RoleItem>[] = [
     filters: true,
     onFilter: true,
     valueType: 'select',
-    valueEnum: {
-      VALID: { text: '正常', status: 'Success' },
-      INVALID: { text: '失效', status: 'Default' },
-    },
+    valueEnum: CommonStatusEnum,
   },
   {
     title: '创建时间',
@@ -72,11 +74,18 @@ export const RoleColumns: ProColumns<RoleItem>[] = [
       <RoleForm id={record.id} operate="editable" />,
       <TableDropdown
         key="actionGroup"
-        onSelect={() => action?.reload()}
-        menus={[
-          { key: 'copy', name: '复制' },
-          { key: 'delete', name: '删除' },
-        ]}
+        onSelect={(key) => {
+          switch (key) {
+            case 'delete':
+              confirmWarning(`是否确定删除角色【${record.name}】`, '此操作将不可逆', async () => {
+                const res = await deleteRole(record.id);
+                success(res);
+              });
+              break;
+          }
+          action?.reload();
+        }}
+        menus={[{ key: 'delete', name: '删除', icon: <DeleteOutlined />, danger: true }]}
       />,
     ],
   },
