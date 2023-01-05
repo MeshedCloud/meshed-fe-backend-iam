@@ -55,7 +55,7 @@ export default (props: Props) => {
         parentId: 0,
         name: '',
         enname: '',
-        owner: 0,
+        ownerId: 0,
         description: '',
       }}
       form={form}
@@ -106,7 +106,7 @@ export default (props: Props) => {
                   ...systemLabel,
                 ]}
                 width="md"
-                name="owner"
+                name="ownerId"
                 tooltip="用于系统中分类管理角色"
                 label="归属系统"
               />

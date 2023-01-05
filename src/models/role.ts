@@ -4,8 +4,7 @@ export class RoleItem extends CommonItem {
   parentId: number | undefined;
   name: string | undefined;
   enname: string | undefined;
-  owner: string | undefined;
-  ownerId: string | undefined;
+  ownerId: number | undefined;
   description: string | undefined;
 }
 

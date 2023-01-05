@@ -10,8 +10,7 @@ import { Button, Form } from 'antd';
 
 import { getData } from '@/common/request';
 import { getSystemDetails, saveSystem } from '@/api/System';
-import { SystemItem } from '@/models/system';
-import { CommonStatus } from '@/common/models';
+import { SystemItem, SystemItemStatus } from '@/models/system';
 import { success } from '@/common/messages';
 
 type Props = {
@@ -96,8 +95,8 @@ export default (props: Props) => {
 
       <ProForm.Group>
         <ProFormSelect
-          initialValue={'VALID'}
-          request={async () => CommonStatus}
+          initialValue={'INITIATION'}
+          request={async () => SystemItemStatus}
           width="md"
           name="status"
           tooltip="系统状态"

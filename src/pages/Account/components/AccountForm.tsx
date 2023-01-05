@@ -39,13 +39,6 @@ export default (props: Props) => {
           </Button>
         )
       }
-      initialValues={{
-        parentId: 0,
-        name: '',
-        enname: '',
-        owner: 0,
-        description: '',
-      }}
       form={form}
       request={async () => {
         return getData(

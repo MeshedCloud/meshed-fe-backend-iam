@@ -79,14 +79,14 @@ export const PermissionColumns: ProColumns<PermissionItem>[] = [
   {
     title: '创建时间',
     key: 'showTime',
-    dataIndex: 'created',
+    dataIndex: 'createTime',
     valueType: 'date',
     sorter: true,
     hideInSearch: true,
   },
   {
     title: '创建时间',
-    dataIndex: 'created',
+    dataIndex: 'createTime',
     valueType: 'dateRange',
     hideInTable: true,
     search: {

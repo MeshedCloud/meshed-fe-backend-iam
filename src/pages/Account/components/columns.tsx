@@ -118,7 +118,7 @@ export const AccountColumns: ProColumns<AccountItem>[] = [
   },
   {
     title: '创建时间',
-    dataIndex: 'create_time',
+    dataIndex: 'createTime',
     valueType: 'dateRange',
     hideInTable: true,
     search: {

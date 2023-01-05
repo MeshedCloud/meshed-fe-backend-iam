@@ -63,7 +63,7 @@ export default (props: Props) => {
         parentId: 0,
         name: '',
         enname: '',
-        owner: 0,
+        ownerId: 0,
         description: '',
       }}
       form={form}
@@ -120,7 +120,7 @@ export default (props: Props) => {
                   ...systemLabel,
                 ]}
                 width="md"
-                name="owner"
+                name="ownerId"
                 tooltip="用于系统中分类管理权限"
                 label="归属系统"
                 rules={[{ required: true, message: '请选择归属系统!' }]}

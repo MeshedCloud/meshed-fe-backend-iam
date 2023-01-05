@@ -7,7 +7,7 @@ export class PermissionItem extends CommonItem {
   access!: string;
   accessMode: string | undefined;
   uri: string | undefined;
-  owner: string | undefined;
+  ownerId: number | undefined;
   description: string | undefined;
   children: PermissionItem[] | undefined;
 }
