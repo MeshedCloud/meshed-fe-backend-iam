@@ -8,3 +8,11 @@ export function success(res: undefined | Response<any>, successMsg?: string) {
   }
   return false;
 }
+
+export function tips(msg: string) {
+  if (msg != undefined && msg != '') {
+    message.info(msg);
+    return true;
+  }
+  return false;
+}

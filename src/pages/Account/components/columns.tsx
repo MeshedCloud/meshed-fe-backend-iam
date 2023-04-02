@@ -1,12 +1,13 @@
 import { ProColumns, TableDropdown } from '@ant-design/pro-components';
-import { AccountItem } from '@/models/account';
-import { Space, Tag, Tooltip } from 'antd';
+import { AccountItem } from '@/services/account/account';
+import { Space, Tooltip } from 'antd';
 import { CommonStatusEnum } from '@/common/models';
 import AccountForm from '@/pages/Account/components/AccountForm';
 import { DeleteOutlined, LockOutlined, UnlockOutlined, WarningOutlined } from '@ant-design/icons';
 import { confirmWarning } from '@/common/confirms';
-import { deleteAccount, lockAccount, unlockAccount } from '@/api/Account';
+import { deleteAccount, lockAccount, unlockAccount } from '@/services/account/api';
 import { success } from '@/common/messages';
+import GrantRoleForm from '@/pages/Account/components/GrantRoleForm';
 
 export const AccountColumns: ProColumns<AccountItem>[] = [
   {
@@ -47,6 +48,20 @@ export const AccountColumns: ProColumns<AccountItem>[] = [
     ),
   },
   {
+    title: '用户名称',
+    dataIndex: 'realName',
+    ellipsis: true,
+    tip: '登入账号',
+    formItemProps: {
+      rules: [
+        {
+          required: true,
+          message: '此项为必填项',
+        },
+      ],
+    },
+  },
+  {
     title: '手机号',
     dataIndex: 'phone',
     copyable: true,
@@ -65,9 +80,9 @@ export const AccountColumns: ProColumns<AccountItem>[] = [
         {
           <>
             <a>{_}</a>
-            <Tag color={record.validPhone ? 'success' : 'processing'}>
-              {record.validPhone ? '已校验' : '未校验'}
-            </Tag>
+            {/*<Tag color={record.validPhone ? 'success' : 'processing'}>*/}
+            {/*  {record.validPhone ? '已校验' : '未校验'}*/}
+            {/*</Tag>*/}
           </>
         }
       </Space>
@@ -92,9 +107,9 @@ export const AccountColumns: ProColumns<AccountItem>[] = [
         {
           <>
             <a href={`mailto:${record.email}`}>{_}</a>
-            <Tag color={record.validEmail ? 'success' : 'processing'}>
-              {record.validEmail ? '已校验' : '未校验'}
-            </Tag>
+            {/*<Tag color={record.validEmail ? 'success' : 'processing'}>*/}
+            {/*  {record.validEmail ? '已校验' : '未校验'}*/}
+            {/*</Tag>*/}
           </>
         }
       </Space>
@@ -109,33 +124,12 @@ export const AccountColumns: ProColumns<AccountItem>[] = [
     valueEnum: CommonStatusEnum,
   },
   {
-    title: '创建时间',
-    key: 'showTime',
-    dataIndex: 'createTime',
-    valueType: 'date',
-    sorter: true,
-    hideInSearch: true,
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'create_time',
-    valueType: 'dateRange',
-    hideInTable: true,
-    search: {
-      transform: (value) => {
-        return {
-          startTime: value[0],
-          endTime: value[1],
-        };
-      },
-    },
-  },
-  {
     title: '操作',
     valueType: 'option',
     key: 'option',
     render: (text, record, _, action) => [
-      <AccountForm id={record.id} operate="editable" />,
+      <AccountForm id={record.id} operate="editable" onFinish={()=> action?.reload()}/>,
+      <GrantRoleForm id={record.id} />,
       <TableDropdown
         key="actionGroup"
         onSelect={(key) => {
@@ -145,8 +139,13 @@ export const AccountColumns: ProColumns<AccountItem>[] = [
                 `是否确定锁定用户【${record.loginId}】`,
                 '锁定后用户将无法进行操作',
                 async () => {
-                  const res = await lockAccount({ id: record.id });
-                  success(res);
+                  if (record.id){
+                    const res = await lockAccount({ id: record.id });
+                    success(res);
+                    if (res.success){
+                      action?.reload();
+                    }
+                  }
                 },
               );
               break;
@@ -155,8 +154,14 @@ export const AccountColumns: ProColumns<AccountItem>[] = [
                 `是否确定解锁用户【${record.loginId}】`,
                 '解锁后用户将恢复正常使用',
                 async () => {
-                  const res = await unlockAccount({ id: record.id });
-                  success(res);
+                  if (record.id){
+                    const res = await unlockAccount({ id: record.id });
+                    success(res);
+                    if (res.success){
+                      action?.reload();
+                    }
+                  }
+
                 },
               );
               break;
@@ -165,27 +170,33 @@ export const AccountColumns: ProColumns<AccountItem>[] = [
                 `是否确定删除用户【${record.loginId}】`,
                 '此操作将不可逆',
                 async () => {
-                  const res = await deleteAccount(record.id);
-                  success(res);
+                  if (record.id){
+                    const res = await deleteAccount(record.id);
+                    success(res);
+                    if (res && res.success){
+                      action?.reload();
+                    }
+                  }
+
                 },
               );
               break;
           }
-          action?.reload();
+
         }}
         menus={[
           {
             key: 'lock',
             name: '锁定',
             icon: <LockOutlined />,
-            hidden: record.locked,
+            hidden: record.status !== 'VALID',
             danger: true,
           },
           {
             key: 'unlock',
-            name: '解锁',
+            name: '恢复',
             icon: <UnlockOutlined />,
-            hidden: !record.locked,
+            hidden: record.status === 'VALID',
             danger: true,
           },
           { key: 'delete', name: '删除', icon: <DeleteOutlined />, danger: true },

@@ -2,16 +2,14 @@ import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import {
   ModalForm,
   ProForm,
-  ProFormSelect,
+  ProFormRadio,
   ProFormText,
   ProFormTextArea,
 } from '@ant-design/pro-components';
 import { Button, Form } from 'antd';
 
-import { getData } from '@/common/request';
-import { getSystemDetails, saveSystem } from '@/api/System';
-import { SystemItem } from '@/models/system';
-import { CommonStatus } from '@/common/models';
+import { saveSystem } from '@/services/system/api';
+import { SystemItem } from '@/services/system/system';
 import { success } from '@/common/messages';
 
 type Props = {
@@ -41,18 +39,11 @@ export default (props: Props) => {
       initialValues={{
         parentId: 0,
         name: '',
-        enname: '',
+        key: '',
         owner: 0,
         description: '',
       }}
       form={form}
-      request={async () => {
-        return getData(
-          await getSystemDetails({ id: props.id }),
-          props.id !== undefined,
-          new SystemItem(),
-        );
-      }}
       autoFocusFirstInput
       modalProps={{
         destroyOnClose: true,
@@ -66,7 +57,7 @@ export default (props: Props) => {
     >
       <ProForm.Group>
         <ProFormText
-          width="md"
+          width="sm"
           name="name"
           label="系统名称"
           tooltip="最长为 24 位"
@@ -75,12 +66,29 @@ export default (props: Props) => {
         />
 
         <ProFormText
-          width="md"
-          name="enname"
+          width="sm"
+          name="key"
           label="Key"
           tooltip="最长为 24 位"
           placeholder="请输入系统key"
           rules={[{ required: true, message: '请输入系统key!' }]}
+        />
+        <ProFormRadio.Group
+          width="sm"
+          radioType="button"
+          name="type"
+          label="系统类型"
+          initialValue={"SERVICE"}
+          options={[
+            {
+              label: '服务',
+              value: 'SERVICE',
+            },
+            {
+              label: '授权',
+              value: 'EMPOWER',
+            },
+          ]}
         />
       </ProForm.Group>
 
@@ -91,17 +99,6 @@ export default (props: Props) => {
           label="描述"
           tooltip="最长为 200 字符"
           placeholder="请输入描述"
-        />
-      </ProForm.Group>
-
-      <ProForm.Group>
-        <ProFormSelect
-          initialValue={'VALID'}
-          request={async () => CommonStatus}
-          width="md"
-          name="status"
-          tooltip="系统状态"
-          label="状态"
         />
       </ProForm.Group>
     </ModalForm>

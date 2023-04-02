@@ -1,23 +1,20 @@
-import { EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { EditOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 import {
   ModalForm,
   ProForm,
-  ProFormSelect,
   ProFormText,
-  ProFormTreeSelect,
 } from '@ant-design/pro-components';
 import { Button, Form } from 'antd';
 
 import { getData } from '@/common/request';
-import { AccountDetail } from '@/models/account';
-import { getAccountDetails, saveAccount } from '@/api/Account';
-import { CommonStatus } from '@/common/models';
-import { getRoleTreeSelect } from '@/api/Role';
+import { AccountDetail } from '@/services/account/account';
+import { getAccountDetails, saveAccount } from '@/services/account/api';
 import { success } from '@/common/messages';
 
 type Props = {
   operate: string;
   id?: number;
+  onFinish?: () => void
 };
 
 export default (props: Props) => {
@@ -29,7 +26,7 @@ export default (props: Props) => {
       trigger={
         props.operate == 'addition' ? (
           <Button type="primary">
-            <PlusOutlined />
+            <UsergroupAddOutlined />
             新建
           </Button>
         ) : (
@@ -39,13 +36,6 @@ export default (props: Props) => {
           </Button>
         )
       }
-      initialValues={{
-        parentId: 0,
-        name: '',
-        enname: '',
-        owner: 0,
-        description: '',
-      }}
       form={form}
       request={async () => {
         return getData(
@@ -61,13 +51,30 @@ export default (props: Props) => {
       }}
       submitTimeout={2000}
       onFinish={async (values) => {
+        if (props.operate !== 'addition'){
+          values.id = props.id
+        }
         const res = await saveAccount(values);
+        if (res.success && props.onFinish){
+          await props.onFinish();
+        }
         return success(res);
       }}
+
     >
       <ProForm.Group>
         <ProFormText
-          disabled={props.operate != 'addition'}
+          width="md"
+          name="realName"
+          label="账号名称"
+          tooltip="最长为 24 位"
+          placeholder="请输入账号名称"
+          rules={[{ required: true, message: '请输入账号名称!' }]}
+        />
+      </ProForm.Group>
+      <ProForm.Group>
+        <ProFormText
+          hidden={props.operate != 'addition'}
           width="md"
           name="loginId"
           label="账号名称"
@@ -79,7 +86,7 @@ export default (props: Props) => {
         <ProFormText.Password
           hidden={props.operate != 'addition'}
           width="md"
-          name="password"
+          name="secretKey"
           label="密码"
           rules={[{ required: true, message: '请输入密码!' }]}
         />
@@ -101,46 +108,6 @@ export default (props: Props) => {
           tooltip="请输入合法的邮箱，最长支持32位"
           placeholder="请输入邮箱"
           rules={[{ type: 'email', message: '请输入合法的邮箱，最长支持32位!' }]}
-        />
-      </ProForm.Group>
-
-      <ProForm.Group>
-        <ProFormTreeSelect
-          tooltip="授予用户角色"
-          label="授权"
-          name="roles"
-          placeholder="请选择授与的角色"
-          allowClear
-          width={330}
-          secondary
-          request={async () => {
-            const res = await getRoleTreeSelect({});
-            return res.success && res.data ? res.data : [];
-          }}
-          // tree-select args
-          fieldProps={{
-            treeCheckable: true,
-            showArrow: false,
-            filterTreeNode: true,
-            showSearch: true,
-            dropdownMatchSelectWidth: false,
-            labelInValue: true,
-            autoClearSearchValue: true,
-            multiple: true,
-            treeNodeFilterProp: 'title',
-            fieldNames: {
-              label: 'title',
-            },
-          }}
-        />
-
-        <ProFormSelect
-          initialValue={'VALID'}
-          request={async () => CommonStatus}
-          width="md"
-          name="status"
-          tooltip="角色状态"
-          label="状态"
         />
       </ProForm.Group>
     </ModalForm>

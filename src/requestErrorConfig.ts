@@ -94,13 +94,11 @@ export const errorConfig: RequestConfig = {
   requestInterceptors: [
     (config: RequestOptions) => {
       // 拦截请求配置，进行个性化处理。
-      const url = config?.url?.concat('?token = 123');
-      console.log(config?.params);
       if (config?.params?.current) {
         config.params.pageIndex = config?.params?.current;
         delete config.params['current'];
       }
-      return { ...config, url };
+      return { ...config };
     },
   ],
 

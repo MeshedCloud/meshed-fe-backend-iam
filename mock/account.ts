@@ -186,12 +186,23 @@ const getAccountDetails = (req: Request, res: Response) => {
       createTime: '2022-10-05T14:59:24',
       updateBy: 'sys',
       updateTime: '2022-10-05T14:59:24',
-      roles: [1],
     },
+  });
+};
+const getAccountRoles = (req: Request, res: Response) => {
+  res.json({
+    success: true,
+    errCode: null,
+    errMessage: null,
+    data: [1,2,3,4],
   });
 };
 
 const saveAccount = (req: Request, res: Response) => {
+  res.json(SUCCESS_RESPONSE);
+};
+
+const grantAccountRoles = (req: Request, res: Response) => {
   res.json(SUCCESS_RESPONSE);
 };
 
@@ -210,7 +221,9 @@ const unlockAccount = (req: Request, res: Response) => {
 export default {
   'GET /api/iam/account/list': getAccountList,
   'GET /api/iam/account/details': getAccountDetails,
+  'GET /api/iam/account/roles': getAccountRoles,
   'POST /api/iam/account/save': saveAccount,
+  'POST /api/iam/account/grant/roles': grantAccountRoles,
   'DELETE /api/iam/account/delete/*': deleteAccount,
   'POST /api/iam/account/lock': lockAccount,
   'POST /api/iam/account/unlock': unlockAccount,
