@@ -1,9 +1,9 @@
 import { Button, Space, Tag } from 'antd';
 import { ProListMetas } from '@ant-design/pro-list';
-import { SystemItem, SystemItemStatusEnum } from '@/models/system';
+import { SystemItem, SystemItemStatusEnum } from '@/services/system/system';
 import SystemForm from '@/pages/System/components/SystemForm';
 import { confirmWarning } from '@/common/confirms';
-import { deleteSystem } from '@/api/System';
+import { deleteSystem } from '@/services/system/api';
 import { success, tips } from '@/common/messages';
 import { DeleteOutlined } from '@ant-design/icons';
 
@@ -17,7 +17,7 @@ export const SystemMetas: ProListMetas<SystemItem> = {
     search: false,
   },
   subTitle: {
-    dataIndex: 'enname',
+    dataIndex: 'key',
     render: (_, row) => {
       return (
         <Space size={0}>
@@ -51,8 +51,11 @@ export const SystemMetas: ProListMetas<SystemItem> = {
             return;
           }
           confirmWarning(`是否确定删除角色【${record.name}】`, '此操作将不可逆', async () => {
-            const res = await deleteSystem(record.id);
-            success(res);
+            if (record.id != null) {
+              const res = await deleteSystem(record.id);
+              success(res);
+            }
+
           });
           action?.reload();
         }}

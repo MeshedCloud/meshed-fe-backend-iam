@@ -9,8 +9,7 @@ const getSystemList = (req: Request, res: Response) => {
     data: [
       {
         id: 1,
-        parentId: 0,
-        enname: 'iam',
+        key: 'iam',
         description: '账号管理',
         name: '身份中心',
         status: 'RUN',
@@ -19,8 +18,7 @@ const getSystemList = (req: Request, res: Response) => {
       },
       {
         id: 2,
-        parentId: 0,
-        enname: 'rd',
+        key: 'rd',
         description: '项目管理，接口管理',
         name: '研发中心',
         status: 'RD',
@@ -29,8 +27,7 @@ const getSystemList = (req: Request, res: Response) => {
       },
       {
         id: 3,
-        parentId: 0,
-        enname: 'devops',
+        key: 'devops',
         description: '生产环境管理',
         name: '运维中心',
         status: 'OFFLINE',
@@ -39,8 +36,7 @@ const getSystemList = (req: Request, res: Response) => {
       },
       {
         id: 4,
-        parentId: 0,
-        enname: 'platform',
+        key: 'platform',
         description: '通用服务',
         name: '平台中心',
         status: 'INITIATION',
@@ -49,8 +45,7 @@ const getSystemList = (req: Request, res: Response) => {
       },
       {
         id: 5,
-        parentId: 0,
-        enname: 'workflow',
+        key: 'workflow',
         description: '负责管理通用流程业务',
         name: '流程中心',
         status: 'DISCARD',
@@ -68,27 +63,22 @@ const getSystemLabel = (req: Request, res: Response) => {
     data: [
       {
         id: 1,
-        parentId: 0,
         name: '身份中心',
       },
       {
         id: 2,
-        parentId: 0,
         name: '研发中心',
       },
       {
         id: 3,
-        parentId: 0,
         name: '运维中心',
       },
       {
         id: 4,
-        parentId: 0,
         name: '平台中心',
       },
       {
         id: 5,
-        parentId: 0,
         name: '流程中心',
       },
     ],
@@ -102,8 +92,7 @@ const getSystemDetails = (req: Request, res: Response) => {
     errMessage: null,
     data: {
       id: 1,
-      parentId: 0,
-      enname: 'iam',
+      key: 'iam',
       description: '账号管理',
       name: '身份中心',
       status: 'RUN',

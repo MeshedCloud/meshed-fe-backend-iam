@@ -17,11 +17,10 @@ export default {
    */
   test: {
     // localhost:8000/api/** -> https://preview.pro.ant.design/api/**
-    '/api/': {
-      target:
-        'https://console-mock.apipost.cn/mock/12116459-e7b3-459b-be4e-8338d621a0cc/iam/account/list',
+    '/api/iam/': {
+      target: 'http://localhost:7989',
       changeOrigin: true,
-      pathRewrite: { '^': '' },
+      pathRewrite: { '^/api': '' },
     },
   },
   pre: {

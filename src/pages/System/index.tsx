@@ -1,7 +1,7 @@
 import { ProList } from '@ant-design/pro-components';
-import { SystemItem } from '@/models/system';
+import { SystemItem } from '@/services/system/system';
 import { SystemMetas } from '@/pages/System/components/metas';
-import { getSystemList } from '@/api/System';
+import { getSystemList } from '@/services/system/api';
 import SystemForm from '@/pages/System/components/SystemForm';
 
 export default () => {

@@ -22,7 +22,7 @@ export class Response<T> {
 }
 
 export class CommonItem {
-  id!: number;
+  id?: number;
   status?: string;
   created?: string;
   updated?: string;
@@ -56,5 +56,6 @@ export const CommonStatus = [
 
 export const CommonStatusEnum = {
   VALID: { text: '正常', status: 'Success' },
-  INVALID: { text: '失效', status: 'Default' },
+  INVALID: { text: '失效', status: 'Error' },
+  LOCK: { text: '锁定', status: 'Error' },
 };

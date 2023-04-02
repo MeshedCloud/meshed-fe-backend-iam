@@ -3,8 +3,8 @@ import type { ActionType } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { Button, Dropdown, Menu } from 'antd';
 import { useRef } from 'react';
-import { AccountItem } from '@/models/account';
-import { getAccountList } from '@/api/Account';
+import { AccountItem } from '@/services/account/account';
+import { getAccountList } from '@/services/account/api';
 import { AccountColumns } from '@/pages/Account/components/columns';
 import AccountForm from '@/pages/Account/components/AccountForm';
 
@@ -40,7 +40,7 @@ export default () => {
           type: 'multiple',
         }}
         columnsState={{
-          persistenceKey: 'pro-table-singe-demos',
+          persistenceKey: 'account-table',
           persistenceType: 'localStorage',
           onChange(value) {
             console.log('value: ', value);
@@ -55,18 +55,6 @@ export default () => {
             listsHeight: 400,
           },
         }}
-        form={{
-          // 由于配置了 transform，提交的参与与定义的不同这里需要转化一下
-          syncToUrl: (values, type) => {
-            if (type === 'get') {
-              return {
-                ...values,
-                created_at: [values.startTime, values.endTime],
-              };
-            }
-            return values;
-          },
-        }}
         pagination={{
           showSizeChanger: true,
           onChange: (page) => console.log(page),
@@ -74,7 +62,7 @@ export default () => {
         dateFormatter="string"
         headerTitle="账号管理"
         toolBarRender={() => [
-          <AccountForm operate="addition" />,
+          <AccountForm operate="addition" onFinish={() => actionRef.current?.reload()} />,
           <Dropdown key="menu" overlay={menu}>
             <Button>
               <EllipsisOutlined />

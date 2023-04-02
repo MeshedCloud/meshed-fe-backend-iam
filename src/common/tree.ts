@@ -7,8 +7,10 @@ export type Struct = {
   id: 'id';
   parent: 'parentId';
   children: 'children';
+  parentNode: 'parent';
 };
-export function toTree<T>(data: T[] | undefined, struct: Struct, convert: Convert | undefined) {
+
+export function toTree<T>(data: T[] | undefined, struct: Struct, convert: Convert | undefined, needParent?: boolean | false) {
   // 空数组
   const result: any[] = [];
   // 判断不是数组  直接返回
@@ -31,18 +33,21 @@ export function toTree<T>(data: T[] | undefined, struct: Struct, convert: Conver
       map.set(item[struct.id], item);
     }
   });
-
   map.forEach((item) => {
     // item.parentId 为0时 返回underfined
     const parent = item[struct.parent] ? map.get(item[struct.parent]) : undefined;
+
+    if (needParent && parent != undefined){
+      item[struct.parentNode]= parent
+    }
+
     if (parent) {
       (parent[struct.children] || (parent[struct.children] = [])).push(item);
     } else {
       // 这里push的item是pid为0的数据
       result.push(item);
     }
-  });
 
-  console.log(result);
+  });
   return result;
 }

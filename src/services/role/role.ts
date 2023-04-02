@@ -11,3 +11,8 @@ export class RoleItem extends CommonItem {
 export class RoleDetails extends RoleItem {
   access: number[] | undefined;
 }
+
+export class RoleGrantPermission {
+  id: number | undefined;
+  access: string[] | undefined;
+}

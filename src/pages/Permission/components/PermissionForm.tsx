@@ -2,58 +2,44 @@ import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import {
   ModalForm,
   ProForm,
-  ProFormDependency,
+  ProFormDependency, ProFormRadio,
   ProFormSelect,
-  ProFormText,
+  ProFormText, ProFormTextArea,
   ProFormTreeSelect,
 } from '@ant-design/pro-components';
-import { Button, Form, Tag } from 'antd';
+import { Button, Form } from 'antd';
 import {
-  getPermissionAllList,
   getPermissionDetails,
-  getPermissionTreeSelect,
   savePermission,
-} from '@/api/Permission';
+} from '@/services/permission/api';
 import { getData } from '@/common/request';
-import { PermissionItem } from '@/models/permission';
-import { getSystemSelect } from '@/api/System';
+import { PermissionItem } from '@/services/permission/permission';
 import { CommonStatus } from '@/common/models';
 import { success } from '@/common/messages';
 
 type Props = {
   operate: string;
   id?: number;
+  onFinish?: () => void;
+  systemOptions: any[];
+  permissionOptions: any[];
+
 };
 
 export default (props: Props) => {
   const [form] = Form.useForm<PermissionItem>();
 
-  const systemLabel: any[] = [];
-  getSystemSelect({}).then((res) => {
-    if (res.success && res.data) {
-      systemLabel.push(...res.data);
-    }
-  });
-
-  const permissionMap = new Map();
-  getPermissionAllList({}).then((res) => {
-    if (res.success && res.data) {
-      for (const item of res.data) {
-        permissionMap.set(item.id, item);
-      }
-    }
-  });
   return (
     <ModalForm<PermissionItem>
       title={props.operate == 'addition' ? '新建权限' : '更新权限'}
       trigger={
         props.operate == 'addition' ? (
-          <Button type="primary">
+          <Button type='primary'>
             <PlusOutlined />
             新建
           </Button>
         ) : (
-          <Button type="link">
+          <Button type='link'>
             <EditOutlined />
             编辑
           </Button>
@@ -62,7 +48,7 @@ export default (props: Props) => {
       initialValues={{
         parentId: 0,
         name: '',
-        enname: '',
+        key: '',
         ownerId: 0,
         description: '',
       }}
@@ -81,29 +67,56 @@ export default (props: Props) => {
       }}
       submitTimeout={2000}
       onFinish={async (values) => {
+        if (props.operate !== 'addition') {
+          values.id = props.id;
+        }
+        if (values.accessMode !== 'EMPOWER') {
+          values.access = undefined;
+        }
         const res = await savePermission(values);
+        if (res.success && props.onFinish) {
+          await props.onFinish();
+        }
         return success(res);
       }}
     >
       <ProForm.Group>
+        <ProFormRadio.Group
+          width='sm'
+          radioType='button'
+          name='accessMode'
+          label='授权模式'
+          tooltip='访问所需要的最低权限'
+          rules={[{ required: true, message: '请选择访问所需要的最低权限!' }]}
+          initialValue={'ANONYMOUS'}
+          options={[
+            {
+              value: 'ANONYMOUS',
+              label: '匿名',
+            },
+            {
+              value: 'LOGIN',
+              label: '登入',
+            },
+            {
+              value: 'EMPOWER',
+              label: '授权',
+            },
+          ]}
+        />
         <ProFormTreeSelect
           initialValue={0}
-          request={async () => {
-            const accessMode: Number[] = [0, 1, 2, 3];
-            const res = await getPermissionTreeSelect({ accessMode });
-            const root: any = {
+          request={async () => [
+            {
               value: 0,
-              title: '主系统',
-            };
-            if (res.success && res.data) {
-              res.data.unshift(root);
-            }
-            return res.success && res.data ? res.data : root;
-          }}
-          width="md"
-          name="parentId"
-          tooltip="父权限可以拥有权限的全部权限,子权限继承父权限权限字符扩展"
-          label="父权限"
+              label: '主系统',
+            },
+            ...props.permissionOptions,
+          ]}
+          width='sm'
+          name='parentId'
+          tooltip='父权限可以拥有权限的全部权限,子权限继承父权限权限字符扩展'
+          label='父权限'
           rules={[{ required: true, message: '请选择根权限!' }]}
         />
         <ProFormDependency name={['parentId']}>
@@ -111,112 +124,87 @@ export default (props: Props) => {
             return (
               <ProFormSelect
                 initialValue={0}
-                hidden={values['parentId'] != 0}
+                hidden={values.parentId != 0}
                 request={async () => [
                   {
                     value: 0,
                     label: '主系统',
                   },
-                  ...systemLabel,
+                  ...props.systemOptions,
                 ]}
-                width="md"
-                name="ownerId"
-                tooltip="用于系统中分类管理权限"
-                label="归属系统"
+                width='sm'
+                name='ownerId'
+                tooltip='用于系统中分类管理权限'
+                label='归属系统'
                 rules={[{ required: true, message: '请选择归属系统!' }]}
               />
             );
           }}
         </ProFormDependency>
+
       </ProForm.Group>
+
       <ProForm.Group>
         <ProFormText
-          width="md"
-          name="name"
-          label="权限名称"
-          tooltip="最长为 24 位"
-          placeholder="请输入权限名称"
+          width='md'
+          name='name'
+          label='权限名称'
+          tooltip='最长为 24 位'
+          placeholder='请输入权限名称'
           rules={[{ required: true, message: '请输入权限名称!' }]}
         />
 
-        <ProFormText
-          width="md"
-          name="uri"
-          label="权限路径"
-          tooltip="最长为 24 位"
-          placeholder="请输入权限路径"
-          rules={[{ required: true, message: '请输入权限路径!' }]}
-        />
-      </ProForm.Group>
-
-      <ProForm.Group>
-        <ProFormText
-          width="md"
-          name="enname"
-          label="业务码"
-          tooltip="最长为 24 位"
-          placeholder="请输入业务码"
-          rules={[{ required: true, message: '请输入业务码!' }]}
-        />
-        <ProFormDependency name={['parentId', 'enname']}>
+        <ProFormDependency name={['accessMode']}>
           {(values) => {
-            const parentId = values['parentId'];
-            const enname = values['enname'];
-            const item = parentId != undefined ? permissionMap.get(parentId) : undefined;
-
             return (
-              <ProForm.Item label="权限码" hidden={item == undefined && enname == undefined}>
-                <Tag color="cyan-inverse">
-                  {item != undefined
-                    ? item.access + ':' + (enname == undefined ? '?' : enname.toUpperCase())
-                    : enname}
-                </Tag>
-              </ProForm.Item>
+              <ProFormText
+                hidden={values.accessMode !== 'EMPOWER'}
+                width='md'
+                name='access'
+                label='业务码'
+                tooltip='最长为 24 位'
+                placeholder='请输入业务码'
+                rules={[{ warningOnly: true, message: '请输入业务码!' }]}
+              />
             );
           }}
         </ProFormDependency>
+
       </ProForm.Group>
 
       <ProForm.Group>
-        <ProFormSelect
-          request={async () => [
-            {
-              value: '0',
-              label: '匿名',
-            },
-            {
-              value: '1',
-              label: '登入',
-            },
-            {
-              value: '2',
-              label: '授权',
-            },
-            {
-              value: '3',
-              label: '领域',
-            },
-            {
-              value: '4',
-              label: '系统',
-            },
-          ]}
-          width="md"
-          name="accessMode"
-          tooltip="访问所需要的最低权限"
-          label="授权模式"
-          rules={[{ required: true, message: '请选择访问所需要的最低权限!' }]}
+
+        <ProFormText
+          width='lg'
+          name='uri'
+          label='匹配路径'
+          tooltip='最长为 24 位'
+          placeholder='请输入权限路径'
+          rules={[{ required: true, message: '请输入权限路径!' }]}
         />
 
-        <ProFormSelect
+        <ProFormRadio.Group
+          width='md'
+          radioType='button'
+          name='status'
+          label='状态'
+          tooltip='权限状态'
+          rules={[{ required: true, message: '请选择访问所需要的最低权限!' }]}
           initialValue={'VALID'}
-          request={async () => CommonStatus}
-          width="md"
-          name="status"
-          tooltip="权限状态"
-          label="状态"
+          options={CommonStatus}
         />
       </ProForm.Group>
+
+      <ProForm.Group>
+        <ProFormTextArea
+          width='xl'
+          name='description'
+          label='描述'
+          placeholder='请输入描述'
+        />
+
+      </ProForm.Group>
+
     </ModalForm>
   );
 };
