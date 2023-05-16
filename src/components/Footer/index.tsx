@@ -1,8 +1,9 @@
 import { GithubOutlined } from '@ant-design/icons';
 import { DefaultFooter } from '@ant-design/pro-components';
 import '@umijs/max';
+
 const Footer: React.FC = () => {
-  const defaultMessage = 'Meshed Cloud 统一身份管理';
+  const defaultMessage = 'Meshed Cloud 研发中台';
   const currentYear = new Date().getFullYear();
   return (
     <DefaultFooter

@@ -13,6 +13,6 @@ export class RoleDetails extends RoleItem {
 }
 
 export class RoleGrantPermission {
-  id: number | undefined;
-  access: string[] | undefined;
+  roleId: number | undefined;
+  permissionIds: number[] | undefined;
 }

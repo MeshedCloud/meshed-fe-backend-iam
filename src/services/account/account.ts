@@ -1,5 +1,6 @@
 export class AccountItem {
   id?: number;
+  realName: number | undefined;
   loginId: number | undefined;
   email: string | undefined;
   phone: string | undefined;
@@ -7,15 +8,13 @@ export class AccountItem {
   validEmail: boolean | undefined;
   validPhone: boolean | undefined;
   locked: boolean | undefined;
-  createTime: string | undefined;
-  updateTime: string | undefined;
 }
 
 export class AccountDetail extends AccountItem {
 }
 
 export class AccountGrantRole {
-  id: number | undefined;
-  roles: string[] | undefined;
+  accountId: number | undefined;
+  roleIds: number[] | undefined;
 }
 

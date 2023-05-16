@@ -7,10 +7,38 @@ const Settings: LayoutSettings & {
   pwa?: boolean;
   logo?: string;
 } = {
+  // headerRender: false,
+  // menuRender: false,
+  // menuHeaderRender: false,
+  // footerRender: false,
   navTheme: 'light',
   // 拂晓蓝
   colorPrimary: '#1890ff',
-  layout: 'side',
+  layout: 'mix',
+  contentWidth: 'Fluid',
+  fixedHeader: false,
+  fixSiderbar: true,
+  colorWeak: false,
+  title: '统一身份管理',
+  pwa: false,
+  logo: 'https://s.meshed.cn/meshed/svg/logo.svg',
+  iconfontUrl: '',
+};
+
+/**
+ * @name
+ */
+const BaseSettings: LayoutSettings & {
+  pwa?: boolean;
+  logo?: string;
+} = {
+  headerRender: false,
+  menuRender: false,
+  menuHeaderRender: false,
+  navTheme: 'light',
+  // 拂晓蓝
+  colorPrimary: '#1890ff',
+  layout: 'mix',
   contentWidth: 'Fluid',
   fixedHeader: false,
   fixSiderbar: true,
@@ -21,4 +49,6 @@ const Settings: LayoutSettings & {
   iconfontUrl: '',
 };
 
-export default Settings;
+export default {
+  BaseSettings,Settings
+}

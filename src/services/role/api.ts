@@ -1,7 +1,7 @@
 import { Request } from '@/common/request';
 import type { RoleItem } from '@/services/role/role';
 import type { PageParams } from '@/common/models';
-import { RoleDetails, RoleGrantPermission } from '@/services/role/role';
+import { RoleCmd, RoleGrantPermission } from '@/services/role/role';
 
 /** 获取规则列表 GET /api/role/list */
 export async function getRoleTreeList(params?: {}, options?: { [key: string]: any }) {
@@ -16,7 +16,7 @@ export async function getRoleDetails(
   if (params.id === undefined) {
     return undefined;
   }
-  return Request.get<RoleDetails>(`/api/iam/role/details/${params.id}`, {}, options);
+  return Request.get<RoleCmd>(`/api/iam/role/details/${params.id}`, {}, options);
 }
 
 /** 获取规则列表 GET /api/role/label */
@@ -25,7 +25,7 @@ export async function getRoleTreeSelect(params?: {}, options?: { [key: string]: 
     '/api/iam/role/select',
     params,
     (value) => {
-      return { title: value.name + `(${value.key})`, value: value.id, key: String(value.id), ...value };
+      return { title: value.name + `(${value.access})`, value: value.id, key: String(value.id), ...value };
     },
     options,
   );
@@ -39,12 +39,12 @@ export async function getRolePermissions(
   if (params.id === undefined) {
     return undefined;
   }
-  return Request.get<number[]>(`/api/iam/role/get/permissions/${params.id}`, {}, options);
+  return Request.get<string[]>(`/api/iam/role/get/permissions/${params.id}`, {}, options);
 }
 
 
 /** 保存（新增和更新）角色 POST /api/role/save */
-export async function saveRole(data: RoleDetails) {
+export async function saveRole(data: RoleCmd) {
   return Request.post('/api/iam/role/save', data);
 }
 
