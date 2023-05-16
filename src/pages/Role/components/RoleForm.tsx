@@ -8,7 +8,7 @@ import {
   ProFormTreeSelect,
 } from '@ant-design/pro-components';
 import { Button, Form } from 'antd';
-import { RoleDetails } from '@/services/role/role';
+import { RoleCmd } from '@/services/role/role';
 import { getRoleDetails, saveRole } from '@/services/role/api';
 import { getData } from '@/common/request';
 import { CommonStatus } from '@/common/models';
@@ -23,10 +23,10 @@ type Props = {
 };
 
 export default (props: Props) => {
-  const [form] = Form.useForm<RoleDetails>();
+  const [form] = Form.useForm<RoleCmd>();
 
   return (
-    <ModalForm<RoleDetails>
+    <ModalForm<RoleCmd>
       title={props.operate == 'addition' ? '新建角色' : '更新角色'}
       trigger={
         props.operate == 'addition' ? (
@@ -53,7 +53,7 @@ export default (props: Props) => {
         return getData(
           await getRoleDetails({ id: props.id }),
           props.id !== undefined,
-          new RoleDetails(),
+          new RoleCmd(),
         );
       }}
       autoFocusFirstInput
@@ -93,7 +93,7 @@ export default (props: Props) => {
           {(values) => {
             return (
               <ProFormSelect
-                hidden={values['parentId'] != 0}
+                hidden={values['parentId'] != 0 || props.operate !== 'addition'}
                 initialValue={0}
                 request={async () => [
                   {
@@ -124,7 +124,7 @@ export default (props: Props) => {
 
         <ProFormText
           width="md"
-          name="key"
+          name="access"
           label="角色标识"
           placeholder="请输入角色标识"
           rules={[{ required: true, message: '请输入角色标识!' }]}

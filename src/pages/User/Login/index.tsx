@@ -1,46 +1,26 @@
-import Footer from '@/components/Footer';
-import { login } from '@/services/ant-design-pro/api';
-import { getFakeCaptcha } from '@/services/ant-design-pro/login';
-import {
-  AlipayCircleOutlined,
-  LockOutlined,
-  MobileOutlined,
-  TaobaoCircleOutlined,
-  UserOutlined,
-  WeiboCircleOutlined,
-} from '@ant-design/icons';
-import {
-  LoginForm,
-  ProFormCaptcha,
-  ProFormCheckbox,
-  ProFormText,
-} from '@ant-design/pro-components';
-import { history, useModel } from '@umijs/max';
-import { Alert, message, Tabs } from 'antd';
-import React, { useState } from 'react';
-import { flushSync } from 'react-dom';
-import styles from './index.less';
-const LoginMessage: React.FC<{
-  content: string;
-}> = ({ content }) => {
-  return (
-    <Alert
-      style={{
-        marginBottom: 24,
-      }}
-      message={content}
-      type="error"
-      showIcon
-    />
-  );
-};
+import { Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
+import { useSearchParams,useLocation } from 'umi';
+import {history, useModel} from '@umijs/max';
+import OAUTH2 from '@/../config/oauth2';
+import React, { useEffect } from 'react';
+import {flushSync} from "react-dom";
+
+const TOKEN = 'TOKEN';
+
+
+
 const Login: React.FC = () => {
-  const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
-  const [type, setType] = useState<string>('account');
+  const antIcon = <LoadingOutlined style={{ fontSize: 100 }} spin />;
+  const oldToken = localStorage.getItem(TOKEN);
+  const [searchParams] = useSearchParams();
+  const location  = useLocation();
   const { initialState, setInitialState } = useModel('@@initialState');
   const fetchUserInfo = async () => {
+    //获取最新用户信息
     const userInfo = await initialState?.fetchUserInfo?.();
     if (userInfo) {
+      //信息更新
       flushSync(() => {
         setInitialState((s) => ({
           ...s,
@@ -49,178 +29,55 @@ const Login: React.FC = () => {
       });
     }
   };
-  const handleSubmit = async (values: API.LoginParams) => {
-    try {
-      // 登录
-      const msg = await login({
-        ...values,
-        type,
-      });
-      if (msg.status === 'ok') {
-        const defaultLoginSuccessMessage = '登录成功！';
-        message.success(defaultLoginSuccessMessage);
-        await fetchUserInfo();
-        const urlParams = new URL(window.location.href).searchParams;
-        history.push(urlParams.get('redirect') || '/');
-        return;
+  const doLogin = async () => {
+    const error = searchParams.get('error');
+    const hash = location.hash;
+    if (error) { // 错误提示跳转至错误页面
+      history.push(`/error/400?errCode=${error}`);
+    } else if (hash && hash.length > 7) { // 成功获取token，存储token，刷新信息
+      const token = hash.substring(7);
+      localStorage.setItem(TOKEN, token);
+      await fetchUserInfo();
+      const redirect = searchParams.get('redirect');
+      if (redirect){
+        history.push(redirect)
+      } else {
+        history.push("/")
+      } //重定向或者返回首页
+    } else if (!hash || hash.length <= 7) {  //唤起登入授权地址
+      const redirect = window.location.href; //OAUTH2回传TOKEN地址
+      let target = OAUTH2.prod.target //获取OAUTH2服务地址
+      if (REACT_APP_ENV == 'dev'){
+        target = OAUTH2.dev.target
+      } else if (REACT_APP_ENV == 'test'){
+        target = OAUTH2.dev.target
+      } else if (REACT_APP_ENV == 'pre') {
+        target = OAUTH2.dev.target
       }
-      console.log(msg);
-      // 如果失败去设置用户错误信息
-      setUserLoginState(msg);
-    } catch (error) {
-      const defaultLoginFailureMessage = '登录失败，请重试！';
-      console.log(error);
-      message.error(defaultLoginFailureMessage);
+      window.location.href = `${target}?redirect=${redirect}`;
     }
-  };
-  const { status, type: loginType } = userLoginState;
+  }
+
+  useEffect(()=>{
+    if (!oldToken){
+      doLogin();
+    } else {
+      history.push("/")
+    }
+  },[])
+
+
   return (
-    <div className={styles.container}>
-      <div className={styles.content}>
-        <LoginForm
-          logo={<img alt="logo" src="https://s.meshed.cn/meshed/svg/logo-no-background.svg" />}
-          title="Meshed Cloud 身份中心"
-          subTitle={'Meshed Cloud 是微服务快速开发辅助平台'}
-          initialValues={{
-            autoLogin: true,
-          }}
-          actions={[
-            '其他登录方式 :',
-            <AlipayCircleOutlined key="AlipayCircleOutlined" className={styles.icon} />,
-            <TaobaoCircleOutlined key="TaobaoCircleOutlined" className={styles.icon} />,
-            <WeiboCircleOutlined key="WeiboCircleOutlined" className={styles.icon} />,
-          ]}
-          onFinish={async (values) => {
-            await handleSubmit(values as API.LoginParams);
-          }}
-        >
-          <Tabs
-            activeKey={type}
-            onChange={setType}
-            centered
-            items={[
-              {
-                key: 'account',
-                label: '账户密码登录',
-              },
-              {
-                key: 'mobile',
-                label: '手机号登录',
-              },
-            ]}
-          />
-
-          {status === 'error' && loginType === 'account' && (
-            <LoginMessage content={'错误的用户名和密码(admin/ant.design)'} />
-          )}
-          {type === 'account' && (
-            <>
-              <ProFormText
-                name="username"
-                fieldProps={{
-                  size: 'large',
-                  prefix: <UserOutlined className={styles.prefixIcon} />,
-                }}
-                placeholder={'用户名: admin or user'}
-                rules={[
-                  {
-                    required: true,
-                    message: '用户名是必填项！',
-                  },
-                ]}
-              />
-              <ProFormText.Password
-                name="password"
-                fieldProps={{
-                  size: 'large',
-                  prefix: <LockOutlined className={styles.prefixIcon} />,
-                }}
-                placeholder={'密码: ant.design'}
-                rules={[
-                  {
-                    required: true,
-                    message: '密码是必填项！',
-                  },
-                ]}
-              />
-            </>
-          )}
-
-          {status === 'error' && loginType === 'mobile' && <LoginMessage content="验证码错误" />}
-          {type === 'mobile' && (
-            <>
-              <ProFormText
-                fieldProps={{
-                  size: 'large',
-                  prefix: <MobileOutlined className={styles.prefixIcon} />,
-                }}
-                name="mobile"
-                placeholder={'请输入手机号！'}
-                rules={[
-                  {
-                    required: true,
-                    message: '手机号是必填项！',
-                  },
-                  {
-                    pattern: /^1\d{10}$/,
-                    message: '不合法的手机号！',
-                  },
-                ]}
-              />
-              <ProFormCaptcha
-                fieldProps={{
-                  size: 'large',
-                  prefix: <LockOutlined className={styles.prefixIcon} />,
-                }}
-                captchaProps={{
-                  size: 'large',
-                }}
-                placeholder={'请输入验证码！'}
-                captchaTextRender={(timing, count) => {
-                  if (timing) {
-                    return `${count} ${'秒后重新获取'}`;
-                  }
-                  return '获取验证码';
-                }}
-                name="captcha"
-                rules={[
-                  {
-                    required: true,
-                    message: '验证码是必填项！',
-                  },
-                ]}
-                onGetCaptcha={async (phone) => {
-                  const result = await getFakeCaptcha({
-                    phone,
-                  });
-                  if (result === false) {
-                    return;
-                  }
-                  message.success('获取验证码成功！验证码为：1234');
-                }}
-              />
-            </>
-          )}
-          <div
-            style={{
-              marginBottom: 24,
-            }}
-          >
-            <ProFormCheckbox noStyle name="autoLogin">
-              自动登录
-            </ProFormCheckbox>
-            <a
-              style={{
-                float: 'right',
-              }}
-            >
-              忘记密码 ?
-            </a>
-          </div>
-        </LoginForm>
-      </div>
-      <Footer />
+    <div style={{
+      textAlign: "center",
+      position: "absolute",
+      top: "50%",
+      left: "50%",
+      transform: 'translate(-50%,-50%)'
+    }}>
+      <Spin size="large" indicator={antIcon} tip="go login ..."/>
     </div>
+
   );
 };
 export default Login;

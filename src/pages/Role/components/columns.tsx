@@ -27,8 +27,8 @@ const getRoleColumns = (systemOptions: any[], roleOptions: any[]): ProColumns<Ro
       },
     },
     {
-      title: 'Key',
-      dataIndex: 'key',
+      title: '授权码',
+      dataIndex: 'access',
       copyable: true,
       ellipsis: true,
       tip: '角色代码',

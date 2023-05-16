@@ -15,6 +15,7 @@ import { success } from '@/common/messages';
 type Props = {
   operate: string;
   id?: number;
+  onFinish?: () => void;
 };
 
 export default (props: Props) => {
@@ -52,6 +53,9 @@ export default (props: Props) => {
       submitTimeout={2000}
       onFinish={async (values) => {
         const res = await saveSystem(values);
+        if (res.success && props.onFinish){
+          await props.onFinish();
+        }
         return success(res);
       }}
     >

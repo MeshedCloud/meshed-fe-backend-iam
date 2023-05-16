@@ -3,12 +3,12 @@ import type { AccountItem } from '@/services/account/account';
 import type { PageParams } from '@/common/models';
 import { AccountDetail, AccountGrantRole } from '@/services/account/account';
 
-/** 获取规则列表 GET /api/iam/account/list */
+/** 获取账号列表 GET /api/iam/account/list */
 export async function getAccountList(params: {}, options?: { [key: string]: any }) {
   return await Request.getPage<AccountItem>('/api/iam/account/list', <PageParams>params, options);
 }
 
-/** 获取规则列表 GET /api/account/details */
+/** 获取账号详情 GET /api/account/details */
 export async function getAccountDetails(
   params: { id: number | undefined },
   options?: { [key: string]: any },
@@ -18,7 +18,7 @@ export async function getAccountDetails(
   }
   return Request.get<AccountDetail>(`/api/iam/account/details/${params.id}`, params, options);
 }
-/** 获取规则列表 GET /api/account/role */
+/** 获取账号角色 GET /api/account/role */
 export async function getAccountRoles(
   params: { id: number | undefined },
   options?: { [key: string]: any },
@@ -26,7 +26,7 @@ export async function getAccountRoles(
   if (params.id === undefined) {
     return undefined;
   }
-  return Request.get<number[]>(`/api/iam/account/get/roles/${params.id}`, {}, options);
+  return Request.get<string[]>(`/api/iam/account/get/roles/${params.id}`, {}, options);
 }
 
 /** 保存（新增和更新）账号 POST /api/account/save */

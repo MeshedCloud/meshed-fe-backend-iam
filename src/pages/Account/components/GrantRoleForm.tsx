@@ -12,6 +12,7 @@ import { DataNode } from 'antd/lib/tree';
 import { useState } from 'react';
 import TreeTransfer from '@/common/transfer';
 import { getRoleTreeSelect } from '@/services/role/api';
+import { StringArrToIntArr } from '@/common/strings';
 
 type Props = {
   id?: number;
@@ -47,11 +48,13 @@ export default (props: Props) => {
         getAccountRoles({ id: props.id }).then(res => {
           if (res != undefined && res.success && res.data) {
             const keys = [];
+            console.log(res);
             if (res.data.length > 0) {
               for (const id of res.data) {
-                keys.push(String(id));
+                keys.push(id);
               }
             }
+            console.log(keys);
             setTargetKeys(keys);
           }
         });
@@ -67,8 +70,8 @@ export default (props: Props) => {
       onFinish={async () => {
         console.log(targetKeys);
         const res = await grantAccountRoles({
-          id: props.id,
-          roles: targetKeys,
+          accountId: props.id,
+          roleIds: StringArrToIntArr(targetKeys),
         });
         setTargetKeys([]);
         return success(res);

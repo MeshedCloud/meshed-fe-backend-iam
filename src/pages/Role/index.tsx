@@ -85,7 +85,7 @@ export default () => {
         dateFormatter="string"
         headerTitle="角色管理"
         toolBarRender={() => [
-          <RoleForm operate="addition" systemOptions={systemOptions} roleOptions={roleOptions}/>,
+          <RoleForm operate="addition" systemOptions={systemOptions} roleOptions={roleOptions} onFinish={() =>  actionRef.current?.reload()}/>,
 
           <Dropdown key="menu" overlay={menu}>
             <Button>

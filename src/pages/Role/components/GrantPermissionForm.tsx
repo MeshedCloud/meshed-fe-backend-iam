@@ -12,6 +12,7 @@ import { useState } from 'react';
 import TreeTransfer from '@/common/transfer';
 import { getRolePermissions, grantRolePermissions } from '@/services/role/api';
 import { getPermissionTreeSelect } from '@/services/permission/api';
+import { StringArrToIntArr } from '@/common/strings';
 
 type Props = {
   id?: number;
@@ -51,7 +52,7 @@ export default (props: Props) => {
             const keys = [];
             if (res.data.length > 0) {
               for (const id of res.data) {
-                keys.push(String(id));
+                keys.push(id);
               }
             }
             setTargetKeys(keys);
@@ -67,10 +68,9 @@ export default (props: Props) => {
       }}
       submitTimeout={2000}
       onFinish={async () => {
-        console.log(targetKeys);
         const res = await grantRolePermissions({
-          id: props.id,
-          access: targetKeys,
+          roleId: props.id,
+          permissionIds: StringArrToIntArr(targetKeys),
         });
         setTargetKeys([]);
         return success(res);
