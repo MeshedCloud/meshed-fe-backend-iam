@@ -130,7 +130,6 @@ export const errorConfig: RequestConfig = {
         config.params.pageIndex = config?.params?.current;
         delete config.params.current;
       }
-      //
       return { ...config, headers: authHeader };
     },
   ],

@@ -8,9 +8,6 @@ export class RoleItem extends CommonItem {
   description: string | undefined;
 }
 
-export class RoleCmd extends RoleItem {
-  access: string | undefined;
-}
 export class RoleDetails extends RoleItem {
   access: number[] | undefined;
 }

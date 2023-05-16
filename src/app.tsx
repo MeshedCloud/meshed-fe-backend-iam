@@ -42,6 +42,7 @@ export async function getInitialState(): Promise<{
       settings,
     };
   }
+
   return {
     fetchUserInfo,
     settings,
@@ -57,6 +58,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     },
     footerRender: () => <Footer />,
     onPageChange: () => {
+
     },
     layoutBgImgList: [
       {
